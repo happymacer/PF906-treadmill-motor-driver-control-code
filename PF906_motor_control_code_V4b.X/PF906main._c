@@ -1,0 +1,881 @@
+/* 
+ * File:   PF906main.c
+ * Version: 2
+ * Author: Happymacer
+ * 
+ * Compiled in XC8 V2.31 
+ * 
+ * Started on 21 March 2021....
+ * 
+ * References to page numbers and registers refers to document DS40001262F
+ * 
+ * This version assumes that the max no load motor voltage is 180VDC which is 
+ * 56% of the available voltage of 320VDC.  
+ * 
+ * Also, minimum RPM is probably in the order of 1000RPM (arbitrary choice) and 
+ * max is 4700RPM (motor rating) for motor heating reasons (low airflow at low 
+ * speeds) and motor speed control accuracy (too few pulses for accuracy at 
+ * slow speeds).  
+ * 
+ * For button pushing convenience lets say we want 10 pushes from min to max 
+ * speed - (4700-1000)/10 = step increment per button push = 370RPM/step 
+ * 
+ * Rounding down to 350rpm/step makes the math nice, and leaves some margin 
+ * at the top end
+ * 
+ *
+  * Note: for a permanent magnet motor the speed is directly proportional to 
+ * voltage  
+ * 
+ * assume max speed is 4500 not 4700 rpm to allow some wiggle room
+ * 
+ * Minimum no load duty cycle => (180/320)*(1000/4700) = 0.12 
+ * Max no load duty cycle => (180/320)*(4500/4700) = 0.54
+ * where:
+ *  180 is motor max voltage,
+ *  320 is system supply voltage 
+ *  4700 is max motor speed
+ * 
+ * So how do we get RPM reading from the RPMCtr pulse count?
+ * 
+ * CCPR1L is just an 8 bit register and is set by the code to define the PWM
+ * pulse width, with the 2 bits from the CCP1CON register tacked on as LSB
+ * 
+ * Now pulse width = 0 for 0rpm, and FF for 4500rpm
+ * and RPM increases in steps of 350rpm for every button press, ie 11 steps
+   
+ * where DCR = Duty cycle ratio = (180/320)*(1000/4700) at 1000rpm
+ *                              = 0.5625*0.213 = 12%            
+ * 
+ * Duty cycle varies between 12% and 54% at no load
+ * 
+ * 
+ * The spinning disk on the motor has 36 openings
+ * 
+ * If we measure in 0.1s and scale that up then any measurement errors are
+ * magnified by the scale factor.  However if we work backwards in math, there 
+ * are no errors.
+ * 
+ * For example 1000RPM with 36 openings in the disk means 36000 pulses per 
+ * minute.  In 1/10s there are 36000/600 pulses = 60pulses.  Hence in 1/10th 
+ * second units we need to count 60 pulses.  
+ * 
+ * At 4500RPM, we need to count 270 pulses in 1/10s.  
+ * 
+ * Due to the speed being proportional to voltage the speed is linear between
+ * 60 and 270 pulse counts
+ * 
+ * This is set out below where the RPM is in column E, and column B is the 
+ * calculated count in 1/10s and column C is that calculated count but allowing 
+ * for rounding errors in the PWM setup using integers
+ * 
+ * 
+ * 				osc freq=	8000000					
+*				prescale val=	1	PWM period=	0.000051			
+*				PR2	65[hex]	101[decimal]		PWM freq	19607.84314	kHz
+*		page 129											
+*
+*	A	B	 C	D	  E	        F        G      H            I           J      K   L
+*	1	60	60	0	1000	0.119680851	49	0.000006125	0.120098039	1003.485839	31	
+*   2	81	81	0	1350	0.161569149	66	0.00000825	0.161764706	1351.633987	42	17
+*	3	102	102	0	1700	0.203457447	83	0.000010375	0.203431373	1699.782135	53	17
+*	4	123	123	0	2050	0.245345745	100	0.0000125	0.245098039	2047.930283	64	17
+*	5	144	144	0	2400	0.287234043	117	0.000014625	0.286764706	2396.078431	75	17
+*	6	165	165	0	2750	0.32912234	134	0.00001675	0.328431373	2744.22658	86	17
+*	7	186	186	0	3100	0.371010638	151	0.000018875	0.370098039	3092.374728	97	17
+*	8	207	206	1	3450	0.412898936	168	0.000021	0.411764706	3440.522876	A8	17
+*	9	228	229	-1	3800	0.454787234	186	0.00002325	0.455882353	3809.150327	BA	18
+*	10	249	249	0	4150	0.496675532	203	0.000025375	0.49754902	4157.298475	CB	17
+*	11	270	270	0	4500	0.53856383	220	0.0000275	0.539215686	4505.446623	DC	17
+* 
+* set up the desired speed array: desiredSpeed[column A] = {column K}
+* 
+* A = step
+* B = design pulse count	(desiredSpeedCtr)
+* C = actual pulse count (count adjusted for conversion factors etc)
+* D = hysteresis needed	
+* E = Design N [RPM]	
+* F = design duty cycle ratio (DCR) as a ratio	
+* G = CCPR1L:CCP1CON<5:4>   =   DCR*4*(PR2+1) [decimal]
+* H = actual pulse width
+* I = actual duty cycle
+* J = actual speed assuming voltage ration 180/320
+* K = CCPR1L:CCP1CON<5:4>   =   DCR*4*(PR2+1) [hex value]
+* L = step value in decimal
+ * 
+ * Refer Excel spreadsheet for more detail 
+ *  
+ * 
+ * 
+ */
+ 
+/* 
+ * This code is based on fixed point integer representation of fractions 
+ * (floats)
+ * 
+ * The PID routine is adapted from the fixedpoint-pid.c code from 
+ * https://gist.github.com/oldrev/a18c856b77634d0043372393940df224
+ * 
+ * added 6 June 2021
+ * 
+ *    Timer 2 is used in PWM, Timer 1 is the RPM counter and Timer 0 does 
+ *    nothing
+ * 
+ * 
+ * 
+ * 
+ */
+
+
+
+#include "PF906header.h"
+
+#define LOW 0x00
+#define HIGH 0x01
+
+
+// #define IVin AN4
+// #define HVin AN5
+// #define MVin AN2
+//"input" and "output" is relative to the PIC 16F690
+
+/* Port A */
+#define FR6out                PORTAbits.RA1 // feedback link - active low
+#define RaiseLower_output     PORTAbits.RA4    
+    // lift motor wind direction - high is one way, low is the other  
+#define TotemControl_output   PORTAbits.RA5 
+    // belt motor on/off via totem control
+
+/* Port B */
+#define LiftMotorUp_input     PORTBbits.RB4 // assumed FR3 in - active low
+#define SpeedDown_input       PORTBbits.RB5 // assumed FR2 in - active low
+#define SpeedUp_input         PORTBbits.RB6 // assumed FR1 in - active low
+    // see the circuit diagram...
+    // the default value for FR7 LED (opto LED) is off, so Q8 default is on, 
+    // hence UserPowerOn_input is high.  To change the UserPowerOn_input state Q8 must 
+    // turn off, Q11 must turn on and hence the opto LED must be on.  To make  
+    // the opto LED turn on, J3 pin3 must be forced low.       
+    // The PIC input itself is LOW in the default state as Q8 is on, so 
+    // it must be an active high input, even if the user control is active low.    
+// PIC permissive control of the belt motor DC supply
+#define PowerPermissive_output PORTBbits.RB7 //output 
+
+/* Port C */
+#define LiftMotorDown_input   PORTCbits.RC2 // assumed FR4 in - active low
+#define RPM_input             PORTCbits.RC3 // RPM counter input 
+#define LED1                  PORTCbits.RC4 // LED 1 - active low
+#define LiftPower_output      PORTCbits.RC6 // supply power to lift motor             
+#define UserPowerOn_input     PORTCbits.RC7 
+  // power input by user - active high - assumed to remain on till user pushes
+  // the screen board POWER button again. If that happens then the signal goes 
+  // low again
+
+/* Global variables */
+// analog voltage conversions
+unsigned short int HV = 0, IV = 0, MV = 0; // 16 bits each
+unsigned int MeasuredBeltSpeed = 0; // 32 bits
+unsigned short int PowerOK = LOW; // user power button latch
+unsigned short int desiredSpeed[] = {0x0,0x31,0x42,0x53,0x64,0x75,0x86,0x97,0xA8,0xBA,0xCB,0xDC};
+//where the index is desiredSpeedCtr
+volatile unsigned short int actualSpeed = 0, desiredSpeedCtr = 0, BeltAngleCtr = 0;
+// updated in the ISR:
+volatile unsigned short int RPMCtr = 0;  // count of the actual pulses 
+
+//Function Prototypes...
+
+void FlashLED1 (unsigned char times, unsigned char period);
+//set up the chip features
+void doSetup(void);
+//Measure the motor voltage
+short int CheckMV (void);
+//measure the motor current
+short int CheckIV (void);
+//measure the incoming source voltage after the caps, before the IGBTs
+short int CheckHV (void);
+
+void setupRPMCtr(void);
+
+void startPWM(void);
+
+void __interrupt() Isr(void);
+
+
+   
+    
+    
+void main(void) {
+         
+    // set up LED output (active low) on RC4 
+    // flash the LED then leave it on to indicate all ok.  If it turns off 
+    // then something is wrong
+    FlashLED1(2, 1);    
+
+    // set the user power selected input state variable
+    PowerOK = LOW; // set low already - just in case
+    // PowerOK will be driven later by the input UserPowerOn_input 
+    doSetup();  //set up the chip peripherals
+    // set up the lift motor to do nothing
+    RaiseLower_output = LOW;  // lift relay coil is not activated
+    LiftPower_output = HIGH;  // lift motor power off 
+    
+    // Disable the belt (main DC) motor 
+    PowerPermissive_output = LOW; 
+    TotemControl_output = LOW; 
+    
+    /* 
+     * Now wait for the caps to charge 
+     * The question is what voltage to let the caps change to.  It takes about
+     * 3 minutes to fully charge the caps via the R55 resistor (47k) but its 
+     * probably enough to trigger the relay at say 90s.  The NGSpice model says 
+     * the HV measurement point will be (scaled to) about 3.37V in 90s. 
+     * This is mostly arbitrary but if your voltage is too low the relay 
+     * contacts will burn over time due to the surge current.
+     * 
+     * Remember this is a treadmill so its probably left on all day in the gym, 
+     * so the caps remain charged so a user doesn't see the delay.  In a 
+     * workshop its a bit painful to wait 3 minutes.  Reduce the resistor 
+     * value if you cant live with the time delay. 
+     * 
+     * So when the HV measured 3.37V, the ADC should produce 690 (in decimal) 
+     * or 2b2 in hex
+     * 
+     * Max value HV gets to is about 4.2V allowing for errors in my NGSpice 
+     * models in Kicad
+     *    
+     */           
+    
+    while (CheckHV() < 0x2B2) {// wait for cap charging but track user input 
+        if (UserPowerOn_input) {PowerOK = !PowerOK;}
+    };  
+    // ... when caps charged then...
+    PowerPermissive_output = HIGH; 
+    //caps charged and ready then energise RLA2 Debug: led on
+    
+    /* 
+     * Now wait for the user to request motor power on
+     * Polling is generally considered wasteful as the processor does nothing
+     * other than poll.  In this case it really doesn't matter as we wont do 
+     * anything else anyway
+     * 
+     * For debugging and possibly in actual use, assume that UserPowerOn_input 
+     * is a pulsed input - ie 1 push for turn on and another for turn off.
+     * We will capture the pulse in PowerOK
+     * 
+     * Switch button debounce is critical to prevent false triggers
+     * 
+    */
+
+    while (PowerOK == LOW) { 
+    //flash totemcontrol debug LED for debug while waiting
+    if (UserPowerOn_input) {PowerOK = !PowerOK;}
+    // __delay_ms(50);
+    TotemControl_output = HIGH;  // led on    
+   // __delay_ms(50);
+    TotemControl_output = LOW;  // led off
+    };
+    
+/* 
+ * To get here the user power input must have been triggered and the caps 
+ * are charged so by the design of the circuit, RLA2 will close its 
+ * contacts without PIC involvement 
+ * 
+ * We are now ready to start turning the belt motor (and/or the incline motor)
+ * 
+*/     
+
+    /* 
+     * Speed up and down buttons work by interrupt
+     * 
+     * enable just the needed interrupts
+     * 
+     * INTCON controls global, peripheral and IOC port A & B interrupts
+     */
+    INTCON = 0b10000000; // was 0b11001000 
+
+    // turn on the totemcontrol to allow PWM to run the motor
+    TotemControl_output = HIGH;   
+ 
+    /*
+     * From here everything happens in the operating loop
+     * 
+    */        
+    
+    while (PowerOK && PowerPermissive_output) {   
+        //check that everything is OK...
+        if (UserPowerOn_input) {PowerOK = !PowerOK;}
+        if ((CheckHV() < 0x2b2)) {
+            //something has gone wrong or user power off: turn off everything
+            //changes to the pin state will make electronics shut down
+            // ...cycle power to reset
+            CCP1CONbits.DC1B = 0; // set the RPM to 0
+            CCPR1L = 0;
+            TotemControl_output = LOW;
+            PowerPermissive_output = LOW;
+            PowerOK = LOW;
+            FlashLED1(5, 1);
+        };
+        
+        /*
+         * Since all is OK, set the speed the user wants when the user 
+         * pushes the "speed" button.
+         * 
+         * Note that the motor does nothing after power on as the speed = 0.  
+         * To do this enable the RB interrupt on change interrupts
+         * This is the users speed selection between 1000 and 4500rpm 
+         * 
+         *  
+         * desiredSpeedCtr is a counter for the user to select the speed steps 
+         * -> the desired speed step.
+         * RPMCtr is the counted pulses for speed feedback and RPMctr/2 
+         * -> the measured speed step
+         * 
+         * 
+         * *****BEWARE*****BEWARE*****BEWARE*****BEWARE*****BEWARE*****BEWARE*****
+         * The motor is rated for 180VDC max, and the power supply at 100% PWM is 
+         * 320VDC, hence max time on is (18000/320)% = 56% at no load
+         * ***********************************************************************
+         * (see PWM setup)
+         *
+         * Turn on the speed button sensing.  They work as interrupts as the 
+         * user can push the button anytime
+         */
+        
+        // enable the port interrupts to allow user input by pushing 
+        // the speed + or - button
+        
+        INTCONbits.RABIE = 0x01; 
+        
+        // This is how to set the PWM speed... by adjusting the PWM duty cycle
+        // Get the lowest 2 bits
+        CCP1CONbits.DC1B = (desiredSpeed[desiredSpeedCtr] & 0x3); 
+        // Get the rest of the bits and set the register
+        CCPR1L = (desiredSpeed[desiredSpeedCtr] >> 2);
+        
+ /* 
+  * start measuring the speed (RPM)
+  * 
+  * RPM measurement in the code occurs as follows:
+ * 1. Start with the RPM pulse counter reset to 0 (RPMctr = 0)
+ * 2. In the main code, timer 1 turns on and starts timing for the selected 
+ *    period of 0.1s.  
+ * 3. Comparator 1 is then turned on
+ * 4. The main program now waits for the timer to end
+ * 5. when a pulse occurs, it causes a comparator interrupt, and the ISR 
+ *    increments RPMctr.  This repeats till the timer runs out
+ * 6. When the timer ends, its ISR turns off the comparator
+ * 7. ... control returned to main program 
+ * 
+ * Every so often, set by the timer 1 period, the RPMCtr is read, 
+ * acted on and reset.
+ * 
+ * It is CRITICAL to count the least significant bits of pulse width in the 
+ * CCP1CON register.  desiredSpeedCtr variable holds the step count and
+ * desiredSpeed[] is the pulse width value to give the duty cycle required 
+ * 
+ * Since we no longer want those bits for the CCPR1L register, so SHIFT it 
+ * 2x right (ie 2 bits right, discarding the shifted bits)
+ * eg: 138d = 1000 1010b shifted right 2x becomes 0010 0010 = 34d
+ */
+//        actualSpeed = 0x00;
+//        RPMCtr = 0x00;
+//        // turn on comparator 1
+//        CM1CON0bits.C1ON = 0x01;
+//        // Turn on timer 1
+//        T1CONbits.TMR1ON = 0x01;
+//        //wait for the timer to end
+//        //while (T1CONbits.TMR1ON) {}; 
+//        // when timer 1 turns off in the ISR it means its complete 
+//        // and the RPMCtr is live
+//        // actualSpeed contains the pulses counted
+//        // now compare to desired speed considering hysteresis....code to be developed still
+    };
+    PowerOK = LOW;
+        
+        
+                   
+        /* IGNORE FOR NOW!!!!!
+         * 
+         * Initialise PID controller
+         * 
+         * PID works as follows:
+         * 
+         * Keep in mind: 
+         * There is no way to actively drive the motor speed down (no
+         * negative motor voltage ability) so all we can do is turn off the  
+         * power and it coasts to the lower speed.
+         * 
+         * Hence: (considering the proportional term only)
+         * Vout = A(Verror) if actual speed < desired speed
+         * Vout = 0         if actual speed >= desired speed
+         * 
+         * have a look at 
+         * https://www.youtube.com/watch?v=w7bP9M6JR4c&list=PLKcjQ_UFkrd4z2qoFuJ1jtVhCSuxxCTpk&index=20
+         * at about 4:00
+         * 
+         * all this happens only while user power input and PIC power 
+         * permissive is true as the RPM counter and PID loop is interrupt based
+         * 
+         * The RPM measurement is via a capture and compare on CCP1 and 
+         * increments a counter asyncronously triggered by the input on pin RC3
+         * 
+         * Speed increment or decrement is asyncronous via port B interrupts
+         * 
+         *     {this has changed as timer 1 is used for rpm now} 
+         * Timer 1 is the PIC cycle timer at 0.1s cycles
+         *     When Timer 1 overflows
+         *     in ISR set PIDCycle
+         *     adjust the speed based on error.  error is difference between 
+         *         desiredSpeed and speed based on pulses 
+         *        
+         *     check IV, MV, HV and react to the input
+         *     check if user has changed speed 
+         *     then wait for next PID cycle to occur
+         */
+
+      
+//        // ***debug code***
+//        TotemControl_output = LOW;
+//        while (PowerOK && PowerPermissive_output) {
+//            if (CheckHV() <0x2b2) PowerPermissive_output = LOW ;
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);            
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            TotemControl_output = HIGH;  // led on    
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);            
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            __delay_ms(250);
+//            TotemControl_output = LOW;  // led off
+//
+//        };
+    };    
+
+
+
+/*** end of main code *****************************/
+
+
+void FlashLED1 (unsigned char times, unsigned char period){  
+    //period in multiples of 50ms
+    if (times > 5) times = 5; // limit to 5 flashes
+    if (period > 10) period = 10; // limit the delay length to 1s
+    unsigned char p = period;
+        do {
+            LED1 = HIGH;    // Turn LED off as its already on
+            do {__delay_ms(50); 
+               } while (--p);
+            p = period;
+            LED1 = LOW;     // Turn LED on
+            do {__delay_ms(50); 
+               } while (--p);
+            p = period;
+            }
+        while (--times);    
+    // LED1 = HIGH;  //always finish with the LED OFF
+    LED1 = LOW;  //always finish with the LED solid on 
+};
+
+void doSetup(){
+    // set up the internal oscillator to 8Mhz and use the chip ~config bits
+    OSCCON = 0x70;   
+    
+    // Make sure the PORT bits are all reset after PIC power up or reset
+    // refer datasheet page 200 that says they are undefined on power up
+    // BEWARE some things turn on when low - low is not always a safe state
+    PORTA = 0b00000010;
+    PORTB = 0b00000000;
+    PORTC = 0b01110000;
+    
+    // set the ADC conversion rate to 4uS- set here as it only needs to be 
+    // done once  
+    ADCON1 = 0b00100000;  
+    
+    // disable global, peripheral and IOC port A & B
+    INTCON = 0b00000000; // was 0b11001000 
+
+    // Enable interrupts on pins RB5 & RB6 for belt speed up and down
+    IOCA = 0b00000000; // no interrupts on port A
+    IOCB = 0b01100000; // just 2 on port B    
+    // set up the interrupt enables of used interrupts
+    PIR1 = 0x00; // reset all the Interrupt flags
+    PIR2 = 0x00;
+    //turn off the second comparator and its interrupt
+    CM2CON0bits.C2ON = 0x00;
+    PIE2bits.C2IE =0x00;
+
+    
+    // Timer 2 is used in PWM, Timer 1 is 0.1s cycle timer
+    // and Timer 0 available
+    
+    // setup Timer 1 IE for RPM counter read
+    /* Instruction cycle is 1/4 of 8MHz and an interrupt every 0.1s means we 
+     * need a count of 200000 so prescaler of 4 means a 16 bit timer gets to 
+     * 50000 then overflows
+     * 
+     * The T1CON register sets the TMR1 prescale... 
+     * 
+     *            bit:  7  6  5  4  3  2  1  0
+     * T1CON register   0  0  1  0  0  0  0  0 ... see page 87 - timer is off
+     * 
+     * The TMR1H and TMR1L must be pre-loaded - overflow is at 65535, counter
+     * value required is 50000, so the difference is loaded into the registers
+     *  15535 = 0x3CAF so
+     * TMR1L = 0xAF
+     * TMR1H = 0x3C
+     * 
+    */ 
+    T1CON = 0b00100000; //timer is off
+    TMR1L = 0xAF;
+    TMR1H = 0x3C;
+    PIE1bits.CCP1IE = 0x00; // disable capture and compare 1
+    PIE1bits.TMR1IE = 0x01; // enable interrupt from Timer 1 
+    
+    //Timer 1 setup for 0.1s timer is done and is not running
+ 
+    
+    /*    P             - 1 is input 0 is output
+     *    O  
+     * T  R  
+     * R  T  
+     * I  @Power on  
+     * S        
+     * 
+     * 1  0 RA0 = ICSP data
+     * 0  1 RA1 = ICSP clock and FR6 output active low
+     * 1  0 RA2 = MV analog input
+     * 1  0 RA3 = VPP/MCLR input
+     * 0  0 RA4 = lift motor raise/lower relay coil active high
+     * 0  0 RA5 = Totem control output active high
+     * 
+     * 0  0 RB0 to RB3 unimplemented on PIC - set arbitrarily to input
+     * 1  0 RB4 = FR3 control input - assumed lift motor up active low
+     * 1  0 RB5 = FR2 control input - assumed speed down active low
+     * 1  0 RB6 = FR1 control input - assumed speed up active low
+     * 0  0 RB7 = Relay 2 main DC power control output active high
+     *  
+     * 1  0 RC0 = IV analog input
+     * 1  0 RC1 = HV analog input
+     * 1  0 RC2 = FR4 control input - assumed lift motor down active low
+     * 1  0 RC3 = RPM input wave to comparator
+     * 0  1 RC4 = LED 1 output active low
+     * 0  1 RC5 = PWM output active LOW (ie when low the MOSFETs are on)
+     * 0  1 RC6 = Power to lift motor enable output active low
+     * 1  0 RC7 = FR7 user system power-on request input - when opto LED is on,
+     *            then FR7 pin 2 was driven LOW (so active low) 
+     *            then power-on input to the PIC is ON (active high)
+     *
+     * To make FR4 on RC2 interrupt driven use Comparator 2.  Not required 
+     * here so not implemented
+     * 
+     *  
+    */
+    
+    
+    // set up the data direction to match PF906 board - see text above
+    TRISA = 0b00001101; 
+    TRISB = 0b01110000;
+    TRISC = 0b10001111; 
+    
+
+    
+    /* 
+     * set all the Port (A, B & C) pins as digital as a configuration  
+     * starting point
+    */
+    ANSEL = 0x00;
+    ANSELH = 0x00;
+    ANSELbits.ANS2 = 0x01;  // MV this is an analog input
+    ANSELbits.ANS4 = 0x01;  // IV 
+    ANSELbits.ANS5 = 0x01;  // HV
+    
+    
+    //set up and start PWM on RC5
+    startPWM(); // always starts at 0rpm by default (maybe check that?)
+    
+    //set up the RPM counter RPMCtr
+    setupRPMCtr();  
+    
+};
+    
+//Measure the motor voltage
+short int CheckMV (){
+    // turn off the ADC before making changes
+     ADCON0bits.ADON = 0x0;
+    //set up analog input on RA2 AN2 (MV) - range 0-3.6V = 0-200VDC
+    ADCON0 = 0b10000101; // right justified, VDD volt ref, channel AN2, 
+                         // not in progress, ADC on
+    __delay_ms(5);
+    ADCON0bits.GO_nDONE = HIGH; // start the ADC
+    while (ADCON0bits.GO_nDONE) {}; //wait for the conversion
+    return (ADRESL | (ADRESH<<8));
+};
+
+//measure the motor current
+short int CheckIV (){
+    // turn off the ADC before making changes
+     ADCON0bits.ADON = 0x0;
+    //set up analog input on RC0 AN4 (IV) - range 0- 3.2V = 0 - 10.5A
+    ADCON0 = 0b10010001; // right justified, VDD volt ref, channel AN4, 
+                         // not in progress, ADC on
+    __delay_ms(5);
+    ADCON0bits.GO_nDONE = HIGH; // start the ADC
+    while (ADCON0bits.GO_nDONE) {}; //wait for the conversion
+    return (ADRESL | (ADRESH<<8));
+};
+
+//measure the incoming source voltage after the caps, before the IGBTs
+short int CheckHV (){  
+    // 16 bits is plenty, 8 is too few as maxes out at 255
+    // steps as per sect 9.2.6 page 109
+    // turn off the ADC before making changes
+     ADCON0bits.ADON = 0x0;
+     
+    //step 1
+    //done in main program
+    
+    //step 2
+    //ADC clock set in main program
+    //set up analog input on RC1 AN5 (HV) 
+    ADCON0 = 0b10010101; // right justified, VDD volt ref, channel AN5, 
+                         // not in progress, ADC on
+    /* 
+     * 
+     * Some notes on the ADC for those of us who are not familiar:
+     * refer
+     * https://learn.sparkfun.com/tutorials/analog-to-digital-conversion/all
+     * 
+     * Resolution of the ADC    =   ADC reading
+     * ---------------------        --------------------
+     * Sampling ref voltage         Analog volt measured
+     * 
+     * Rearranging and substitution to find the value the ADC should read:
+     * ADC reading  =   1024*3.37
+     *                  ---------
+     *                      5     *    
+     */  
+
+    // step 3 not used
+
+    // step 4
+    __delay_ms(5); // data acquisition time is estimated at 4.4us per bit
+    // there is a error on this page as it changes from us in the derivation
+    // to ms in the final formula
+    
+    //step 5
+    //setbit(ADCON0, 1); // start the ADC
+    ADCON0bits.GO_nDONE = HIGH;
+    
+    //step 6
+    while (ADCON0bits.GO_nDONE) {}; // wait for the conversion
+    
+    //step 7
+    
+    return (ADRESL | (ADRESH<<8));  
+    
+    
+
+};
+
+void setupRPMCtr() {  
+/* 
+ * Set up pulse counter on RC3 (RPM) Volatile variable RPMCtr
+ *
+ * The RPM counter setup is a bit complex.
+ * First the RPM signal is connected to RC3, which is not an interrupt pin.
+ * The RPM signal is similar to a sine wave rather than a square wave, as 
+ * it is formed by light from a LED crossing through a hole in a spinning 
+ * disk on the motor shaft to a light dependent transistor, much like we 
+ * have sunrise, daytime, then dusk.  The signal passes low pass filters 
+ * that further reduce the rise time of the wave.
+ * 
+ * To make this wave a reliable counter it is input through the RC3 pin to 
+ * the inverting input of the #1 comparator.  This comparator then 
+ * triggers the counter interrupt where it increments the RPMctr.
+ * 
+ * The comparator output is triggered when the RPM signal exceeds 0.6V
+ * and the interrupt is triggered by the change of the comparator output, 
+ * making it edge triggered.  Due to the 2 state changes per light pulse
+ * the counter may count double what we want (TBC)
+ * 
+ * side note, the motor is rated at 4700rpm, so limiting the max speed to 
+ * 4500rpm for a little margin
+ * 
+ * 
+ * To measure the speed, timing is critical so we need to use an accurate time 
+ * base (ie timer1) timing as accurately as possible.   
+ * 
+ *   
+ * Additional motor protection could be to to check if the count exceeds a 
+ * particular number.  If so then something went wrong and we can shut down
+ * the motor
+ */
+    
+    // setup Comparator 1 interrupt enable for RPM pulse counting 
+    PIE2bits.C1IE =0x01;
+    
+  //refer  fig 8.2 page 92 and register 8.1 page 96
+  //   bits   7  6  5  4  3  2  1  0
+  //CM1CON0 = 0  1  0  0  0  1  1  1-comp off, inverted, pin off ,C12IN3- input
+    CM1CON0 = 0b01000111;
+    //refer  fig 8.2 page 92 and register 8.5 page 104
+    //      bits   7  6  5  4  3  2  1  0
+    // VRCON  =    0  0  0  1  0  0  0  0 -0.6v ref enabled         
+    VRCON = 0b00010000;
+    
+    //remember to reset the interrupt C1OE when it return from the ISR 
+    
+
+    };
+    
+void startPWM(){
+    /* 
+     * The PWM duty cycle relative to 320V sets the motor speed
+     * 
+     * FOR PWM output on P1A then:
+     * Tris for P1A must be cleared -> pin RC5 = 0 to output PWM
+     * CCP1CON register must be 00xx1100 where xx is the LSB of the duty cycle
+     * PR2 value = 0x65
+     * prescale = 1
+     * 
+     * Following steps section 11.3.7 page 130 of the 16F690 datasheet...
+     * 
+     * Remember that chip osc is set to 8MHz so using example data in table 11.3
+     * 
+    */
+    
+    //step 1
+    TRISCbits.TRISC5 = 0x01; // make it a tri-state to disable output
+    
+    //step 2
+    /*
+     * PWM period   = [PR2+1]*4*TMR2 prescale/8000000
+     *              = [PR2+1]/2000000
+     * therefore
+     * PR2 = PWM period*2000000 - 1
+     * PR2 = 2000000/PWMfrequency - 1
+     * thus PR2 = 2000000/19000 - 1 = (rounded) 103 = 67h, say 65h
+     * OR PR2 = 2000000/31000 - 1 = 63 = 3Fh for 31kHz
+     * 
+     */
+    PR2 = 0x65;     // set the PWM period (ie frequency) ~19kHz
+    
+    //step 3
+    /*
+     * For CCP1CON register page 125 Reg 11-1
+     * Bit 7-6 set depending on bits 3-0 - 00 means single output to P1A
+     * bit 5-4 are LSB of duty cycle - here forced to 00
+     * bit 3-0 set to 1110 for PWM mode P1A pin active low (active low means
+     * that the lower the pulse width, the lower the eventual load voltage
+     * 
+     *              bit:  7  6  5  4  3  2  1  0
+     * CCP1CON register   0  0  0  0  1  1  1  0
+     * 
+     */
+    CCP1CON = 0b00001110;
+    // Note we may want to use pulse steering on P1A, register 11-4 PSTRCON
+    // page 144
+    PSTRCON = 0b00000001; //only steer signal to pin P1A - this is the default
+    
+    //step 4
+
+    CCP1CONbits.DC1B = 0; // dont set the RPM yet
+    CCPR1L = 0;
+    
+    // step 5 - set up TMR2
+    // clear the interrupt flag
+    PIR1bits.TMR2IF = 0x00;
+    
+    /*
+     * Set the prescale value
+     * 
+     * the T2CON register sets the TMR2prescale... 
+     * 
+     *            bit:  7  6   5   4   3  2  1  0
+     * T2CON register   -  0   0   0   0  1  0  0 so 
+     * 1:1 post scaler bits 6-3
+     * timer 2 is on bit 2
+     * prescaler bit 1-0 is set to 1 Register 7-1 page 90
+     * 
+     */
+    T2CONbits.T2CKPS = 0x00; // timer 2 prescale set to 1x
+    
+    //turn TMR2 on
+    T2CONbits.TMR2ON = 0x01; 
+    
+    //step 6
+    //wait for TMR2 overflow flag to set
+    while (!PIR1bits.TMR2IF) {}; // wait for the TMR2 overflow
+    
+    //enable PWM output 
+    TRISCbits.TRISC5 = 0x00; // enable output 
+    
+    // done with PWM setup, now change CCP1CON and CCPR1L as required 
+    };
+
+void __interrupt() Isr(void) {
+    // On PIC devices all the interrupts get handled by this ISR
+    // common code to all interrupts
+    INTCONbits.GIE = 0x00; // disable all interrupts in this routine as we are 
+                           // already responding to an interrupt
+    
+    
+    // this is the ISR for the RPM counter on Comparator 1 Interrupt flag
+    if (PIE2bits.C1IE && PIR2bits.C1IF) { 
+        ++RPMCtr;
+        
+        //kill motor if speed excessive - max speed 4700rpm = 2820Hz
+        //if (RPMCtr > 0xB91) TotemControl_output = LOW; //0xB91 = 2820Hz + 5%margin
+        PIR2bits.C1IF = 0x00; // reset the counter interrupt
+    };
+    
+    
+    
+    // this is the ISR for Timer1 - the RPM cycle timer
+    if (PIE1bits.TMR1IE && PIR1bits.TMR1IF) { 
+        //turn off comparator 1
+        CM1CON0bits.C1ON = 0x00; //RPMCtr is now a valid count
+        actualSpeed = RPMCtr;
+        T1CONbits.TMR1ON = 0x00; //turn the timer off again
+        PIR1bits.TMR1IF = 0x00; // reset the timer 1 interrupt
+    };
+    
+    // these are the user initiated belt speed up or down interrupt responses
+    if (INTCONbits.RABIE && INTCONbits.RABIF) {  
+        /* 
+         * we have to read the whole PORT B to find what the user action is
+         * RABIF is an "Interrupt on Change" so even if the user is still 
+         * holding the button down its the same as it was before
+         * so will not trigger the ISR again.
+         * However when the button is released it will trigger again, and 
+         * again nothing happens as the Speed Up and Speed Down buttons on 
+         * port B are now low 
+         * 
+         * 
+        */       
+        if (IOCBbits.IOCB6 && SpeedUp_input)   { //RB6
+            if (desiredSpeedCtr < 12) ++desiredSpeedCtr;  
+        };
+
+        if (IOCBbits.IOCB5 && SpeedDown_input) { //RB5
+            if (desiredSpeedCtr > 0) --desiredSpeedCtr;  
+        };
+        INTCONbits.RABIF = 0x00; // reset the interrupt
+    };
+   
+    // this is the ISR for the Timer 0 overflow IF
+    
+    //this is the ISR for the Timer 1 overflow IF
+    
+    INTCONbits.GIE = 0x01; //enable all interrupts again
+};
+
+

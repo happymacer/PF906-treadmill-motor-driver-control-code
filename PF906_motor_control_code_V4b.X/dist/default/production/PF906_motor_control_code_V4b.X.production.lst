@@ -1,0 +1,1844 @@
+
+
+Microchip MPLAB XC8 Assembler V2.36 build 20220127204148 
+                                                                                               Tue Dec 27 11:56:28 2022
+
+Microchip MPLAB XC8 C Compiler v2.36 (Free license) build 20220127204148 Og1 
+     1                           	processor	16F690
+     2                           	pagewidth 120
+     3                           	opt	flic
+     4                           	psect	idataCOMMON,global,class=CODE,delta=2,noexec
+     5                           	psect	idataBANK0,global,class=CODE,delta=2,noexec
+     6                           	psect	strings,global,class=STRING,delta=2,noexec
+     7                           	psect	cinit,global,class=CODE,merge=1,delta=2
+     8                           	psect	bssCOMMON,global,class=COMMON,space=1,delta=1,noexec
+     9                           	psect	dataCOMMON,global,class=COMMON,space=1,delta=1,noexec
+    10                           	psect	bssBANK0,global,class=BANK0,space=1,delta=1,noexec
+    11                           	psect	dataBANK0,global,class=BANK0,space=1,delta=1,noexec
+    12                           	psect	inittext,global,class=CODE,delta=2
+    13                           	psect	cstackCOMMON,global,class=COMMON,space=1,delta=1,noexec
+    14                           	psect	cstackBANK0,global,class=BANK0,space=1,delta=1,noexec
+    15                           	psect	maintext,global,class=CODE,split=1,delta=2
+    16                           	psect	text1,local,class=CODE,merge=1,delta=2
+    17                           	psect	text2,local,class=CODE,merge=1,delta=2
+    18                           	psect	text3,local,class=CODE,merge=1,delta=2
+    19                           	psect	text4,local,class=CODE,merge=1,delta=2
+    20                           	psect	text5,local,class=CODE,merge=1,delta=2
+    21                           	psect	text6,local,class=CODE,merge=1,delta=2
+    22                           	psect	intentry,global,class=CODE,delta=2
+    23                           	psect	idloc,global,abs,ovrld,class=IDLOC,space=5,delta=2,noexec
+    24                           	psect	config,global,abs,ovrld,class=CONFIG,space=4,delta=2,noexec
+    25                           	dabs	1,0x7E,2
+    26  0000                     
+    27                           ; Version 2.20
+    28                           ; Generated 12/02/2020 GMT
+    29                           ; 
+    30                           ; Copyright © 2020, Microchip Technology Inc. and its subsidiaries ("Microchip")
+    31                           ; All rights reserved.
+    32                           ; 
+    33                           ; This software is developed by Microchip Technology Inc. and its subsidiaries ("Microch
+      +                          ip").
+    34                           ; 
+    35                           ; Redistribution and use in source and binary forms, with or without modification, are
+    36                           ; permitted provided that the following conditions are met:
+    37                           ; 
+    38                           ;     1. Redistributions of source code must retain the above copyright notice, this lis
+      +                          t of
+    39                           ;        conditions and the following disclaimer.
+    40                           ; 
+    41                           ;     2. Redistributions in binary form must reproduce the above copyright notice, this 
+      +                          list
+    42                           ;        of conditions and the following disclaimer in the documentation and/or other
+    43                           ;        materials provided with the distribution.
+    44                           ; 
+    45                           ;     3. Microchip's name may not be used to endorse or promote products derived from th
+      +                          is
+    46                           ;        software without specific prior written permission.
+    47                           ; 
+    48                           ; THIS SOFTWARE IS PROVIDED BY MICROCHIP "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+    49                           ; INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS F
+      +                          OR
+    50                           ; PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL MICROCHIP BE LIABLE FOR ANY DIRECT, INDIREC
+      +                          T,
+    51                           ; INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING BUT NOT LIMITED TO
+    52                           ; PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA OR PROFITS; OR BUSINESS
+    53                           ; INTERRUPTION) HOWSOEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, ST
+      +                          RICT
+    54                           ; LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE U
+      +                          SE OF
+    55                           ; THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+    56                           ; 
+    57                           ; 
+    58                           ; Code-generator required, PIC16F690 Definitions
+    59                           ; 
+    60                           ; SFR Addresses
+    61  0000                     	;# 
+    62  0001                     	;# 
+    63  0002                     	;# 
+    64  0003                     	;# 
+    65  0004                     	;# 
+    66  0005                     	;# 
+    67  0006                     	;# 
+    68  0007                     	;# 
+    69  000A                     	;# 
+    70  000B                     	;# 
+    71  000C                     	;# 
+    72  000D                     	;# 
+    73  000E                     	;# 
+    74  000E                     	;# 
+    75  000F                     	;# 
+    76  0010                     	;# 
+    77  0011                     	;# 
+    78  0012                     	;# 
+    79  0013                     	;# 
+    80  0014                     	;# 
+    81  0015                     	;# 
+    82  0015                     	;# 
+    83  0016                     	;# 
+    84  0017                     	;# 
+    85  0018                     	;# 
+    86  0019                     	;# 
+    87  001A                     	;# 
+    88  001C                     	;# 
+    89  001D                     	;# 
+    90  001E                     	;# 
+    91  001F                     	;# 
+    92  0081                     	;# 
+    93  0085                     	;# 
+    94  0086                     	;# 
+    95  0087                     	;# 
+    96  008C                     	;# 
+    97  008D                     	;# 
+    98  008E                     	;# 
+    99  008F                     	;# 
+   100  0090                     	;# 
+   101  0092                     	;# 
+   102  0093                     	;# 
+   103  0093                     	;# 
+   104  0093                     	;# 
+   105  0094                     	;# 
+   106  0095                     	;# 
+   107  0095                     	;# 
+   108  0096                     	;# 
+   109  0096                     	;# 
+   110  0097                     	;# 
+   111  0098                     	;# 
+   112  0099                     	;# 
+   113  009A                     	;# 
+   114  009B                     	;# 
+   115  009E                     	;# 
+   116  009F                     	;# 
+   117  010C                     	;# 
+   118  010C                     	;# 
+   119  010D                     	;# 
+   120  010E                     	;# 
+   121  010F                     	;# 
+   122  0115                     	;# 
+   123  0116                     	;# 
+   124  0118                     	;# 
+   125  0119                     	;# 
+   126  011A                     	;# 
+   127  011B                     	;# 
+   128  011E                     	;# 
+   129  011F                     	;# 
+   130  018C                     	;# 
+   131  018D                     	;# 
+   132  019D                     	;# 
+   133  019E                     	;# 
+   134  0000                     	;# 
+   135  0001                     	;# 
+   136  0002                     	;# 
+   137  0003                     	;# 
+   138  0004                     	;# 
+   139  0005                     	;# 
+   140  0006                     	;# 
+   141  0007                     	;# 
+   142  000A                     	;# 
+   143  000B                     	;# 
+   144  000C                     	;# 
+   145  000D                     	;# 
+   146  000E                     	;# 
+   147  000E                     	;# 
+   148  000F                     	;# 
+   149  0010                     	;# 
+   150  0011                     	;# 
+   151  0012                     	;# 
+   152  0013                     	;# 
+   153  0014                     	;# 
+   154  0015                     	;# 
+   155  0015                     	;# 
+   156  0016                     	;# 
+   157  0017                     	;# 
+   158  0018                     	;# 
+   159  0019                     	;# 
+   160  001A                     	;# 
+   161  001C                     	;# 
+   162  001D                     	;# 
+   163  001E                     	;# 
+   164  001F                     	;# 
+   165  0081                     	;# 
+   166  0085                     	;# 
+   167  0086                     	;# 
+   168  0087                     	;# 
+   169  008C                     	;# 
+   170  008D                     	;# 
+   171  008E                     	;# 
+   172  008F                     	;# 
+   173  0090                     	;# 
+   174  0092                     	;# 
+   175  0093                     	;# 
+   176  0093                     	;# 
+   177  0093                     	;# 
+   178  0094                     	;# 
+   179  0095                     	;# 
+   180  0095                     	;# 
+   181  0096                     	;# 
+   182  0096                     	;# 
+   183  0097                     	;# 
+   184  0098                     	;# 
+   185  0099                     	;# 
+   186  009A                     	;# 
+   187  009B                     	;# 
+   188  009E                     	;# 
+   189  009F                     	;# 
+   190  010C                     	;# 
+   191  010C                     	;# 
+   192  010D                     	;# 
+   193  010E                     	;# 
+   194  010F                     	;# 
+   195  0115                     	;# 
+   196  0116                     	;# 
+   197  0118                     	;# 
+   198  0119                     	;# 
+   199  011A                     	;# 
+   200  011B                     	;# 
+   201  011E                     	;# 
+   202  011F                     	;# 
+   203  018C                     	;# 
+   204  018D                     	;# 
+   205  019D                     	;# 
+   206  019E                     	;# 
+   207                           
+   208                           	psect	idataCOMMON
+   209  0214                     __pidataCOMMON:
+   210                           
+   211                           ;initializer for _button_history_speedDN
+   212  0214  34FF               	retlw	255
+   213                           
+   214                           ;initializer for _button_history_speedUP
+   215  0215  34FF               	retlw	255
+   216                           
+   217                           	psect	idataBANK0
+   218  01F2                     __pidataBANK0:
+   219                           
+   220                           ;initializer for _desiredSpeed
+   221  01F2  3400               	retlw	0
+   222  01F3  3431               	retlw	49
+   223  01F4  3442               	retlw	66
+   224  01F5  3453               	retlw	83
+   225  01F6  3464               	retlw	100
+   226  01F7  3475               	retlw	117
+   227  01F8  3486               	retlw	134
+   228  01F9  3497               	retlw	151
+   229  01FA  34A8               	retlw	168
+   230  01FB  34BA               	retlw	186
+   231  01FC  34CB               	retlw	203
+   232  01FD  34DC               	retlw	220
+   233                           
+   234                           	psect	strings
+   235  0200                     __pstrings:
+   236  0200                     stringtab:
+   237  0200                     __stringtab:
+   238  0200                     stringcode:	
+   239                           ;	String table - string pointers are 1 byte each
+   240                           
+   241  0200                     stringdir:
+   242  0200  3002               	movlw	high stringdir
+   243  0201  008A               	movwf	10
+   244  0202  0804               	movf	4,w
+   245  0203  0A84               	incf	4,f
+   246  0204  0782               	addwf	2,f
+   247  0205                     __stringbase:
+   248  0205  3400               	retlw	0
+   249  0206                     __end_of__stringtab:
+   250  0206                     _minimumVoltage:
+   251  0206  340E               	retlw	14
+   252  0207  3401               	retlw	1
+   253  0208                     __end_of_minimumVoltage:
+   254  0208                     _TestVoltage:
+   255  0208  3414               	retlw	20
+   256  0209  3402               	retlw	2
+   257  020A                     __end_of_TestVoltage:
+   258  0010                     _T1CONbits	set	16
+   259  000D                     _PIR2bits	set	13
+   260  000B                     _INTCONbits	set	11
+   261  0012                     _T2CONbits	set	18
+   262  000C                     _PIR1bits	set	12
+   263  0017                     _CCP1CON	set	23
+   264  001E                     _ADRESH	set	30
+   265  001F                     _ADCON0	set	31
+   266  001F                     _ADCON0bits	set	31
+   267  000F                     _TMR1H	set	15
+   268  000E                     _TMR1L	set	14
+   269  0010                     _T1CON	set	16
+   270  000D                     _PIR2	set	13
+   271  000C                     _PIR1	set	12
+   272  0007                     _PORTC	set	7
+   273  0006                     _PORTB	set	6
+   274  0005                     _PORTA	set	5
+   275  0015                     _CCPR1L	set	21
+   276  0017                     _CCP1CONbits	set	23
+   277  000B                     _INTCON	set	11
+   278  0006                     _PORTBbits	set	6
+   279  0005                     _PORTAbits	set	5
+   280  0007                     _PORTCbits	set	7
+   281  0092                     _PR2	set	146
+   282  0087                     _TRISCbits	set	135
+   283  009E                     _ADRESL	set	158
+   284  008C                     _PIE1bits	set	140
+   285  0087                     _TRISC	set	135
+   286  0086                     _TRISB	set	134
+   287  0085                     _TRISA	set	133
+   288  008D                     _PIE2bits	set	141
+   289  0096                     _IOCA	set	150
+   290  009F                     _ADCON1	set	159
+   291  008F                     _OSCCON	set	143
+   292  0119                     _CM1CON0bits	set	281
+   293  0118                     _VRCON	set	280
+   294  0119                     _CM1CON0	set	281
+   295  011E                     _ANSELbits	set	286
+   296  011F                     _ANSELH	set	287
+   297  011E                     _ANSEL	set	286
+   298  011A                     _CM2CON0bits	set	282
+   299  0116                     _IOCB	set	278
+   300  019D                     _PSTRCON	set	413
+   301                           
+   302                           	psect	cinit
+   303  000D                     start_initialization:	
+   304                           ; #config settings
+   305                           
+   306  000D                     __initialization:
+   307                           
+   308                           ; Initialize objects allocated to BANK0
+   309  000D  1383               	bcf	3,7	;select IRP bank0
+   310  000E  302C               	movlw	low (__pdataBANK0+12)
+   311  000F  00FD               	movwf	btemp+-1
+   312  0010  3001               	movlw	high __pidataBANK0
+   313  0011  00FE               	movwf	btemp
+   314  0012  30F2               	movlw	low __pidataBANK0
+   315  0013  00FF               	movwf	btemp+1
+   316  0014  3020               	movlw	low __pdataBANK0
+   317  0015  0084               	movwf	4
+   318  0016  118A  21E5  118A   	fcall	init_ram0
+   319                           
+   320                           ; Initialize objects allocated to COMMON
+   321  0019  118A  2214  118A   	fcall	__pidataCOMMON	;fetch initializer
+   322  001C  00F9               	movwf	__pdataCOMMON& (0+127)
+   323  001D  118A  2215  118A   	fcall	__pidataCOMMON+1	;fetch initializer
+   324  0020  00FA               	movwf	(__pdataCOMMON+1)& (0+127)
+   325                           
+   326                           ; Clear objects allocated to BANK0
+   327  0021  01AC               	clrf	__pbssBANK0& (0+127)
+   328  0022  01AD               	clrf	(__pbssBANK0+1)& (0+127)
+   329  0023  01AE               	clrf	(__pbssBANK0+2)& (0+127)
+   330  0024  01AF               	clrf	(__pbssBANK0+3)& (0+127)
+   331  0025  01B0               	clrf	(__pbssBANK0+4)& (0+127)
+   332  0026  01B1               	clrf	(__pbssBANK0+5)& (0+127)
+   333  0027  01B2               	clrf	(__pbssBANK0+6)& (0+127)
+   334  0028  01B3               	clrf	(__pbssBANK0+7)& (0+127)
+   335  0029  01B4               	clrf	(__pbssBANK0+8)& (0+127)
+   336                           
+   337                           ; Clear objects allocated to COMMON
+   338  002A  01F7               	clrf	__pbssCOMMON& (0+127)
+   339  002B  01F8               	clrf	(__pbssCOMMON+1)& (0+127)
+   340  002C                     end_of_initialization:	
+   341                           ;End of C runtime variable initialization code
+   342                           
+   343  002C                     __end_of__initialization:
+   344  002C  0183               	clrf	3
+   345  002D  118A  282F         	ljmp	_main	;jump to C main() function
+   346                           
+   347                           	psect	bssCOMMON
+   348  0077                     __pbssCOMMON:
+   349  0077                     _desiredSpeedCtr:
+   350  0077                     	ds	1
+   351  0078                     _button_history_UserPowerOn_input:
+   352  0078                     	ds	1
+   353                           
+   354                           	psect	dataCOMMON
+   355  0079                     __pdataCOMMON:
+   356  0079                     _button_history_speedDN:
+   357  0079                     	ds	1
+   358  007A                     _button_history_speedUP:
+   359  007A                     	ds	1
+   360                           
+   361                           	psect	bssBANK0
+   362  002C                     __pbssBANK0:
+   363  002C                     _actualSpeedPulses:
+   364  002C                     	ds	2
+   365  002E                     _MV:
+   366  002E                     	ds	2
+   367  0030                     _IV:
+   368  0030                     	ds	2
+   369  0032                     _HV:
+   370  0032                     	ds	2
+   371  0034                     _speedError:
+   372  0034                     	ds	1
+   373                           
+   374                           	psect	dataBANK0
+   375  0020                     __pdataBANK0:
+   376  0020                     _desiredSpeed:
+   377  0020                     	ds	12
+   378                           
+   379                           	psect	inittext
+   380  01E1                     init_fetch0:	
+   381                           ;	Called with low address in FSR and high address in W
+   382                           
+   383  01E1  087E               	movf	btemp,w
+   384  01E2  008A               	movwf	10
+   385  01E3  087F               	movf	btemp+1,w
+   386  01E4  0082               	movwf	2
+   387  01E5                     init_ram0:	
+   388                           ;Called with:
+   389                           ;	high address of idata address in btemp 
+   390                           ;	low address of idata address in btemp+1 
+   391                           ;	low address of data in FSR
+   392                           ;	high address + 1 of data in btemp-1
+   393                           
+   394  01E5  118A  21E1  118A   	fcall	init_fetch0
+   395  01E8  0080               	movwf	0
+   396  01E9  0A84               	incf	4,f
+   397  01EA  0804               	movf	4,w
+   398  01EB  067D               	xorwf	btemp+-1,w
+   399  01EC  1903               	btfsc	3,2
+   400  01ED  3400               	retlw	0
+   401  01EE  0AFF               	incf	btemp+1,f
+   402  01EF  1903               	btfsc	3,2
+   403  01F0  0AFE               	incf	btemp,f
+   404  01F1  29E5               	goto	init_ram0
+   405                           
+   406                           	psect	cstackCOMMON
+   407  0070                     __pcstackCOMMON:
+   408  0070                     ?_doSetup:
+   409  0070                     ?_startPWM:	
+   410                           ; 1 bytes @ 0x0
+   411                           
+   412  0070                     ?_setupactualSpeedPulses:	
+   413                           ; 1 bytes @ 0x0
+   414                           
+   415  0070                     ?_main:	
+   416                           ; 1 bytes @ 0x0
+   417                           
+   418  0070                     ?_Isr:	
+   419                           ; 1 bytes @ 0x0
+   420                           
+   421  0070                     ??_Isr:	
+   422                           ; 1 bytes @ 0x0
+   423                           
+   424                           
+   425                           ; 1 bytes @ 0x0
+   426  0070                     	ds	2
+   427  0072                     ??_doSetup:
+   428  0072                     ?_FlashLED1:	
+   429                           ; 1 bytes @ 0x2
+   430                           
+   431  0072                     ??_startPWM:	
+   432                           ; 1 bytes @ 0x2
+   433                           
+   434  0072                     ??_setupactualSpeedPulses:	
+   435                           ; 1 bytes @ 0x2
+   436                           
+   437  0072                     ?_CheckHV:	
+   438                           ; 1 bytes @ 0x2
+   439                           
+   440  0072                     FlashLED1@period:	
+   441                           ; 2 bytes @ 0x2
+   442                           
+   443                           
+   444                           ; 1 bytes @ 0x2
+   445  0072                     	ds	1
+   446  0073                     ??_FlashLED1:
+   447                           
+   448                           ; 1 bytes @ 0x3
+   449  0073                     	ds	1
+   450  0074                     ??_CheckHV:
+   451                           
+   452                           ; 1 bytes @ 0x4
+   453  0074                     	ds	1
+   454  0075                     FlashLED1@times:
+   455                           
+   456                           ; 1 bytes @ 0x5
+   457  0075                     	ds	1
+   458  0076                     FlashLED1@p:
+   459                           
+   460                           ; 1 bytes @ 0x6
+   461  0076                     	ds	1
+   462                           
+   463                           	psect	cstackBANK0
+   464  0035                     __pcstackBANK0:
+   465  0035                     ??_main:
+   466                           
+   467                           ; 1 bytes @ 0x0
+   468  0035                     	ds	3
+   469                           
+   470                           	psect	maintext
+   471  002F                     __pmaintext:	
+   472 ;;
+   473 ;;Main: autosize = 0, tempsize = 3, incstack = 0, save=0
+   474 ;;
+   475 ;; *************** function _main *****************
+   476 ;; Defined at:
+   477 ;;		line 222 in file "PF906_base_code_v4b.c"
+   478 ;; Parameters:    Size  Location     Type
+   479 ;;		None
+   480 ;; Auto vars:     Size  Location     Type
+   481 ;;		None
+   482 ;; Return value:  Size  Location     Type
+   483 ;;                  1    wreg      void 
+   484 ;; Registers used:
+   485 ;;		wreg, fsr0l, fsr0h, status,2, status,0, btemp+1, pclath, cstack
+   486 ;; Tracked objects:
+   487 ;;		On entry : B00/0
+   488 ;;		On exit  : 0/0
+   489 ;;		Unchanged: 0/0
+   490 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+   491 ;;      Params:         0       0       0       0
+   492 ;;      Locals:         0       0       0       0
+   493 ;;      Temps:          0       3       0       0
+   494 ;;      Totals:         0       3       0       0
+   495 ;;Total ram usage:        3 bytes
+   496 ;; Hardware stack levels required when called: 3
+   497 ;; This function calls:
+   498 ;;		_CheckHV
+   499 ;;		_FlashLED1
+   500 ;;		_doSetup
+   501 ;; This function is called by:
+   502 ;;		Startup code after reset
+   503 ;; This function uses a non-reentrant model
+   504 ;;
+   505                           
+   506  002F                     _main:	
+   507                           ;psect for function _main
+   508                           
+   509  002F                     l1137:	
+   510                           ;incstack = 0
+   511                           ; Regs used in _main: [wreg-fsr0h+status,2+status,0+btemp+1+pclath+cstack]
+   512                           
+   513                           
+   514                           ;PF906_base_code_v4b.c: 224:     doSetup();
+   515  002F  118A  2138  118A   	fcall	_doSetup
+   516  0032                     l1139:
+   517                           
+   518                           ;PF906_base_code_v4b.c: 229:     PORTCbits.RC4 = 0x00;
+   519  0032  1283               	bcf	3,5	;RP0=0, select bank0
+   520  0033  1303               	bcf	3,6	;RP1=0, select bank0
+   521  0034  1207               	bcf	7,4	;volatile
+   522  0035                     l1141:
+   523                           
+   524                           ;PF906_base_code_v4b.c: 232:     PORTAbits.RA4 = 0x00;
+   525  0035  1205               	bcf	5,4	;volatile
+   526  0036                     l1143:
+   527                           
+   528                           ;PF906_base_code_v4b.c: 233:     PORTCbits.RC6 = 0x01;
+   529  0036  1707               	bsf	7,6	;volatile
+   530  0037                     l1145:
+   531                           
+   532                           ;PF906_base_code_v4b.c: 236:     PORTBbits.RB7 = 0x00;
+   533  0037  1386               	bcf	6,7	;volatile
+   534  0038                     l1147:
+   535                           
+   536                           ;PF906_base_code_v4b.c: 237:     PORTAbits.RA5 = 0x00;
+   537  0038  1285               	bcf	5,5	;volatile
+   538  0039                     l1149:
+   539                           
+   540                           ;PF906_base_code_v4b.c: 270:     HV = CheckHV();
+   541  0039  118A  21A3  118A   	fcall	_CheckHV
+   542  003C  0873               	movf	?_CheckHV+1,w
+   543  003D  1283               	bcf	3,5	;RP0=0, select bank0
+   544  003E  1303               	bcf	3,6	;RP1=0, select bank0
+   545  003F  00B3               	movwf	_HV+1
+   546  0040  0872               	movf	?_CheckHV,w
+   547  0041  00B2               	movwf	_HV
+   548                           
+   549                           ;PF906_base_code_v4b.c: 271:     while (HV <= TestVoltage) {
+   550  0042  2853               	goto	l1155
+   551  0043                     l1151:
+   552                           
+   553                           ;PF906_base_code_v4b.c: 272:         _delay((unsigned long)((250)*(8000000/4000.0)));
+   554  0043  3003               	movlw	3
+   555  0044  1283               	bcf	3,5	;RP0=0, select bank0
+   556  0045  1303               	bcf	3,6	;RP1=0, select bank0
+   557  0046  00B7               	movwf	??_main+2
+   558  0047  308A               	movlw	138
+   559  0048  00B6               	movwf	??_main+1
+   560  0049  3055               	movlw	85
+   561  004A  00B5               	movwf	??_main
+   562  004B                     u527:
+   563  004B  0BB5               	decfsz	??_main,f
+   564  004C  284B               	goto	u527
+   565  004D  0BB6               	decfsz	??_main+1,f
+   566  004E  284B               	goto	u527
+   567  004F  0BB7               	decfsz	??_main+2,f
+   568  0050  284B               	goto	u527
+   569  0051  0000               	nop
+   570  0052  2839               	goto	l1149
+   571  0053                     l1155:
+   572                           
+   573                           ;PF906_base_code_v4b.c: 271:     while (HV <= TestVoltage) {
+   574  0053  0833               	movf	_HV+1,w
+   575  0054  3A80               	xorlw	128
+   576  0055  00FF               	movwf	btemp+1
+   577  0056  3082               	movlw	130
+   578  0057  027F               	subwf	btemp+1,w
+   579  0058  1D03               	skipz
+   580  0059  285C               	goto	u435
+   581  005A  3015               	movlw	21
+   582  005B  0232               	subwf	_HV,w
+   583  005C                     u435:
+   584  005C  1C03               	skipc
+   585  005D  285F               	goto	u431
+   586  005E  2860               	goto	u430
+   587  005F                     u431:
+   588  005F  2843               	goto	l1151
+   589  0060                     u430:
+   590  0060                     l129:
+   591                           
+   592                           ;PF906_base_code_v4b.c: 276:     PORTAbits.RA1 = 0x00;
+   593  0060  1283               	bcf	3,5	;RP0=0, select bank0
+   594  0061  1303               	bcf	3,6	;RP1=0, select bank0
+   595  0062  1085               	bcf	5,1	;volatile
+   596                           
+   597                           ;PF906_base_code_v4b.c: 277:     PORTBbits.RB7 = 0x01;
+   598  0063  1786               	bsf	6,7	;volatile
+   599                           
+   600                           ;PF906_base_code_v4b.c: 298:     while (button_history_UserPowerOn_input != 0b01111111) 
+      +                          {
+   601  0064  2871               	goto	l130
+   602  0065                     l1157:
+   603                           
+   604                           ;PF906_base_code_v4b.c: 300:        button_history_UserPowerOn_input = button_history_Us
+      +                          erPowerOn_input << 1;
+   605  0065  0878               	movf	_button_history_UserPowerOn_input,w
+   606  0066  00B5               	movwf	??_main
+   607  0067  0735               	addwf	??_main,w
+   608  0068  00B6               	movwf	??_main+1
+   609  0069  0836               	movf	??_main+1,w
+   610  006A  00F8               	movwf	_button_history_UserPowerOn_input
+   611                           
+   612                           ;PF906_base_code_v4b.c: 301:        button_history_UserPowerOn_input |= PORTCbits.RC7;
+   613  006B  0D07               	rlf	7,w	;volatile
+   614  006C  0D07               	rlf	7,w	;volatile
+   615  006D  3901               	andlw	1
+   616  006E  00B5               	movwf	??_main
+   617  006F  0835               	movf	??_main,w
+   618  0070  04F8               	iorwf	_button_history_UserPowerOn_input,f
+   619  0071                     l130:	
+   620                           ;PF906_base_code_v4b.c: 302:     };
+   621                           
+   622                           
+   623                           ;PF906_base_code_v4b.c: 298:     while (button_history_UserPowerOn_input != 0b01111111) 
+      +                          {
+   624  0071  307F               	movlw	127
+   625  0072  0678               	xorwf	_button_history_UserPowerOn_input,w
+   626  0073  1D03               	btfss	3,2
+   627  0074  2876               	goto	u441
+   628  0075  2877               	goto	u440
+   629  0076                     u441:
+   630  0076  2865               	goto	l1157
+   631  0077                     u440:
+   632  0077                     l1159:
+   633                           
+   634                           ;PF906_base_code_v4b.c: 314:     INTCON = 0b11000000;
+   635  0077  30C0               	movlw	192
+   636  0078  008B               	movwf	11	;volatile
+   637  0079                     l1161:
+   638                           
+   639                           ;PF906_base_code_v4b.c: 317:     PORTAbits.RA5 = 0x01;
+   640  0079  1685               	bsf	5,5	;volatile
+   641                           
+   642                           ;PF906_base_code_v4b.c: 325:     while (PORTCbits.RC7 && PORTBbits.RB7) {
+   643  007A  28CE               	goto	l1177
+   644  007B                     l134:
+   645                           
+   646                           ;PF906_base_code_v4b.c: 384:         PORTAbits.RA1 = 0x01;
+   647  007B  1485               	bsf	5,1	;volatile
+   648  007C                     l1163:
+   649                           
+   650                           ;PF906_base_code_v4b.c: 387:         button_history_speedUP = button_history_speedUP << 
+      +                          1;
+   651  007C  087A               	movf	_button_history_speedUP,w
+   652  007D  00B5               	movwf	??_main
+   653  007E  0735               	addwf	??_main,w
+   654  007F  00B6               	movwf	??_main+1
+   655  0080  0836               	movf	??_main+1,w
+   656  0081  00FA               	movwf	_button_history_speedUP
+   657                           
+   658                           ;PF906_base_code_v4b.c: 388:         button_history_speedUP |= PORTBbits.RB6;
+   659  0082  0E06               	swapf	6,w	;volatile
+   660  0083  00B5               	movwf	??_main
+   661  0084  0CB5               	rrf	??_main,f
+   662  0085  0C35               	rrf	??_main,w
+   663  0086  3901               	andlw	1
+   664  0087  00B6               	movwf	??_main+1
+   665  0088  0836               	movf	??_main+1,w
+   666  0089  04FA               	iorwf	_button_history_speedUP,f
+   667                           
+   668                           ;PF906_base_code_v4b.c: 389:         button_history_speedDN = button_history_speedDN << 
+      +                          1;
+   669  008A  0879               	movf	_button_history_speedDN,w
+   670  008B  00B5               	movwf	??_main
+   671  008C  0735               	addwf	??_main,w
+   672  008D  00B6               	movwf	??_main+1
+   673  008E  0836               	movf	??_main+1,w
+   674  008F  00F9               	movwf	_button_history_speedDN
+   675                           
+   676                           ;PF906_base_code_v4b.c: 390:         button_history_speedDN |= PORTBbits.RB5;
+   677  0090  0E06               	swapf	6,w	;volatile
+   678  0091  00B5               	movwf	??_main
+   679  0092  0C35               	rrf	??_main,w
+   680  0093  3901               	andlw	1
+   681  0094  00B6               	movwf	??_main+1
+   682  0095  0836               	movf	??_main+1,w
+   683  0096  04F9               	iorwf	_button_history_speedDN,f
+   684                           
+   685                           ;PF906_base_code_v4b.c: 392:         if (button_history_speedUP == 0b10000000) {
+   686  0097  3080               	movlw	128
+   687  0098  067A               	xorwf	_button_history_speedUP,w
+   688  0099  1D03               	btfss	3,2
+   689  009A  289C               	goto	u451
+   690  009B  289D               	goto	u450
+   691  009C                     u451:
+   692  009C  28A7               	goto	l135
+   693  009D                     u450:
+   694  009D                     l1165:
+   695                           
+   696                           ;PF906_base_code_v4b.c: 393:             if (desiredSpeedCtr < 11) ++desiredSpeedCtr;
+   697  009D  300B               	movlw	11
+   698  009E  0277               	subwf	_desiredSpeedCtr,w
+   699  009F  1803               	skipnc
+   700  00A0  28A2               	goto	u461
+   701  00A1  28A3               	goto	u460
+   702  00A2                     u461:
+   703  00A2  28A7               	goto	l135
+   704  00A3                     u460:
+   705  00A3                     l1167:
+   706  00A3  3001               	movlw	1
+   707  00A4  00B5               	movwf	??_main
+   708  00A5  0835               	movf	??_main,w
+   709  00A6  07F7               	addwf	_desiredSpeedCtr,f
+   710  00A7                     l135:	
+   711                           ;PF906_base_code_v4b.c: 396:         };
+   712                           
+   713                           
+   714                           ;PF906_base_code_v4b.c: 397:         if (button_history_speedDN == 0b10000000) {
+   715  00A7  3080               	movlw	128
+   716  00A8  0679               	xorwf	_button_history_speedDN,w
+   717  00A9  1D03               	btfss	3,2
+   718  00AA  28AC               	goto	u471
+   719  00AB  28AD               	goto	u470
+   720  00AC                     u471:
+   721  00AC  28B4               	goto	l1173
+   722  00AD                     u470:
+   723  00AD                     l1169:
+   724                           
+   725                           ;PF906_base_code_v4b.c: 398:             if (desiredSpeedCtr > 0) --desiredSpeedCtr;
+   726  00AD  0877               	movf	_desiredSpeedCtr,w
+   727  00AE  1903               	btfsc	3,2
+   728  00AF  28B1               	goto	u481
+   729  00B0  28B2               	goto	u480
+   730  00B1                     u481:
+   731  00B1  28B4               	goto	l1173
+   732  00B2                     u480:
+   733  00B2                     l1171:
+   734  00B2  3001               	movlw	1
+   735  00B3  02F7               	subwf	_desiredSpeedCtr,f
+   736  00B4                     l1173:
+   737                           
+   738                           ;PF906_base_code_v4b.c: 408:         CCP1CONbits.DC1B = (desiredSpeed[desiredSpeedCtr] &
+      +                           0x3);
+   739  00B4  0877               	movf	_desiredSpeedCtr,w
+   740  00B5  3E20               	addlw	(low (_desiredSpeed| 0))& (0+255)
+   741  00B6  0084               	movwf	4
+   742  00B7  1383               	bcf	3,7	;select IRP bank0
+   743  00B8  0800               	movf	0,w
+   744  00B9  3903               	andlw	3
+   745  00BA  00B5               	movwf	??_main
+   746  00BB  0EB5               	swapf	??_main,f
+   747  00BC  0817               	movf	23,w	;volatile
+   748  00BD  0635               	xorwf	??_main,w
+   749  00BE  39CF               	andlw	-49
+   750  00BF  0635               	xorwf	??_main,w
+   751  00C0  0097               	movwf	23	;volatile
+   752  00C1                     l1175:
+   753                           
+   754                           ;PF906_base_code_v4b.c: 410:         CCPR1L = (desiredSpeed[desiredSpeedCtr] >> 2);
+   755  00C1  0877               	movf	_desiredSpeedCtr,w
+   756  00C2  3E20               	addlw	(low (_desiredSpeed| 0))& (0+255)
+   757  00C3  0084               	movwf	4
+   758  00C4  0800               	movf	0,w
+   759  00C5  00B5               	movwf	??_main
+   760  00C6  3002               	movlw	2
+   761  00C7                     u495:
+   762  00C7  1003               	clrc
+   763  00C8  0CB5               	rrf	??_main,f
+   764  00C9  3EFF               	addlw	-1
+   765  00CA  1D03               	skipz
+   766  00CB  28C7               	goto	u495
+   767  00CC  0835               	movf	??_main,w
+   768  00CD  0095               	movwf	21	;volatile
+   769  00CE                     l1177:
+   770                           
+   771                           ;PF906_base_code_v4b.c: 325:     while (PORTCbits.RC7 && PORTBbits.RB7) {
+   772  00CE  1F87               	btfss	7,7	;volatile
+   773  00CF  28D1               	goto	u501
+   774  00D0  28D2               	goto	u500
+   775  00D1                     u501:
+   776  00D1  28D6               	goto	l1181
+   777  00D2                     u500:
+   778  00D2                     l1179:
+   779  00D2  1B86               	btfsc	6,7	;volatile
+   780  00D3  28D5               	goto	u511
+   781  00D4  28D6               	goto	u510
+   782  00D5                     u511:
+   783  00D5  287B               	goto	l134
+   784  00D6                     u510:
+   785  00D6                     l1181:
+   786                           
+   787                           ;PF906_base_code_v4b.c: 430:     CCP1CONbits.DC1B = 0;
+   788  00D6  30CF               	movlw	-49
+   789  00D7  0597               	andwf	23,f	;volatile
+   790  00D8                     l1183:
+   791                           
+   792                           ;PF906_base_code_v4b.c: 431:     CCPR1L = 0;
+   793  00D8  0195               	clrf	21	;volatile
+   794  00D9                     l1185:
+   795                           
+   796                           ;PF906_base_code_v4b.c: 432:     PORTAbits.RA5 = 0x00;
+   797  00D9  1285               	bcf	5,5	;volatile
+   798  00DA                     l1187:
+   799                           
+   800                           ;PF906_base_code_v4b.c: 433:     PORTBbits.RB7 = 0x00;
+   801  00DA  1386               	bcf	6,7	;volatile
+   802  00DB                     l1189:
+   803                           
+   804                           ;PF906_base_code_v4b.c: 434:     PORTCbits.RC4 = 0x01;
+   805  00DB  1607               	bsf	7,4	;volatile
+   806  00DC                     l1191:
+   807                           
+   808                           ;PF906_base_code_v4b.c: 442:          FlashLED1(1,4);
+   809  00DC  3004               	movlw	4
+   810  00DD  1283               	bcf	3,5	;RP0=0, select bank0
+   811  00DE  1303               	bcf	3,6	;RP1=0, select bank0
+   812  00DF  00B5               	movwf	??_main
+   813  00E0  0835               	movf	??_main,w
+   814  00E1  00F2               	movwf	FlashLED1@period
+   815  00E2  3001               	movlw	1
+   816  00E3  118A  20E9  118A   	fcall	_FlashLED1
+   817  00E6  28DC               	goto	l1191
+   818  00E7  118A  280B         	ljmp	start
+   819  00E9                     __end_of_main:
+   820                           
+   821                           	psect	text1
+   822  0138                     __ptext1:	
+   823 ;; *************** function _doSetup *****************
+   824 ;; Defined at:
+   825 ;;		line 491 in file "PF906_base_code_v4b.c"
+   826 ;; Parameters:    Size  Location     Type
+   827 ;;		None
+   828 ;; Auto vars:     Size  Location     Type
+   829 ;;		None
+   830 ;; Return value:  Size  Location     Type
+   831 ;;                  1    wreg      void 
+   832 ;; Registers used:
+   833 ;;		wreg, status,2, status,0, pclath, cstack
+   834 ;; Tracked objects:
+   835 ;;		On entry : 0/0
+   836 ;;		On exit  : 0/0
+   837 ;;		Unchanged: 0/0
+   838 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+   839 ;;      Params:         0       0       0       0
+   840 ;;      Locals:         0       0       0       0
+   841 ;;      Temps:          0       0       0       0
+   842 ;;      Totals:         0       0       0       0
+   843 ;;Total ram usage:        0 bytes
+   844 ;; Hardware stack levels used: 1
+   845 ;; Hardware stack levels required when called: 2
+   846 ;; This function calls:
+   847 ;;		_setupactualSpeedPulses
+   848 ;;		_startPWM
+   849 ;; This function is called by:
+   850 ;;		_main
+   851 ;; This function uses a non-reentrant model
+   852 ;;
+   853                           
+   854  0138                     _doSetup:	
+   855                           ;psect for function _doSetup
+   856                           
+   857  0138                     l989:	
+   858                           ;incstack = 0
+   859                           ; Regs used in _doSetup: [wreg+status,2+status,0+pclath+cstack]
+   860                           
+   861                           
+   862                           ;PF906_base_code_v4b.c: 493:     OSCCON = 0b01110001;
+   863  0138  3071               	movlw	113
+   864  0139  1683               	bsf	3,5	;RP0=1, select bank1
+   865  013A  1303               	bcf	3,6	;RP1=0, select bank1
+   866  013B  008F               	movwf	15	;volatile
+   867                           
+   868                           ;PF906_base_code_v4b.c: 498:     PORTA = 0b00000010;
+   869  013C  3002               	movlw	2
+   870  013D  1283               	bcf	3,5	;RP0=0, select bank0
+   871  013E  1303               	bcf	3,6	;RP1=0, select bank0
+   872  013F  0085               	movwf	5	;volatile
+   873  0140                     l991:
+   874                           
+   875                           ;PF906_base_code_v4b.c: 499:     PORTB = 0b00000000;
+   876  0140  0186               	clrf	6	;volatile
+   877  0141                     l993:
+   878                           
+   879                           ;PF906_base_code_v4b.c: 500:     PORTC = 0b01110000;
+   880  0141  3070               	movlw	112
+   881  0142  0087               	movwf	7	;volatile
+   882  0143                     l995:
+   883                           
+   884                           ;PF906_base_code_v4b.c: 504:     ADCON1 = 0b00100000;
+   885  0143  3020               	movlw	32
+   886  0144  1683               	bsf	3,5	;RP0=1, select bank1
+   887  0145  1303               	bcf	3,6	;RP1=0, select bank1
+   888  0146  009F               	movwf	31	;volatile
+   889  0147                     l997:
+   890                           
+   891                           ;PF906_base_code_v4b.c: 507:     INTCON = 0b00000000;
+   892  0147  018B               	clrf	11	;volatile
+   893  0148                     l999:
+   894                           
+   895                           ;PF906_base_code_v4b.c: 510:     IOCA = 0b00000000;
+   896  0148  0196               	clrf	22	;volatile
+   897  0149                     l1001:
+   898                           
+   899                           ;PF906_base_code_v4b.c: 511:     IOCB = 0b00000000;
+   900  0149  1283               	bcf	3,5	;RP0=0, select bank2
+   901  014A  1703               	bsf	3,6	;RP1=1, select bank2
+   902  014B  0196               	clrf	22	;volatile
+   903  014C                     l1003:
+   904                           
+   905                           ;PF906_base_code_v4b.c: 513:     PIR1 = 0x00;
+   906  014C  1283               	bcf	3,5	;RP0=0, select bank0
+   907  014D  1303               	bcf	3,6	;RP1=0, select bank0
+   908  014E  018C               	clrf	12	;volatile
+   909  014F                     l1005:
+   910                           
+   911                           ;PF906_base_code_v4b.c: 514:     PIR2 = 0x00;
+   912  014F  018D               	clrf	13	;volatile
+   913  0150                     l1007:
+   914                           
+   915                           ;PF906_base_code_v4b.c: 516:     CM2CON0bits.C2ON = 0x00;
+   916  0150  1283               	bcf	3,5	;RP0=0, select bank2
+   917  0151  1703               	bsf	3,6	;RP1=1, select bank2
+   918  0152  139A               	bcf	26,7	;volatile
+   919  0153                     l1009:
+   920                           
+   921                           ;PF906_base_code_v4b.c: 517:     PIE2bits.C2IE =0x00;
+   922  0153  1683               	bsf	3,5	;RP0=1, select bank1
+   923  0154  1303               	bcf	3,6	;RP1=0, select bank1
+   924  0155  130D               	bcf	13,6	;volatile
+   925                           
+   926                           ;PF906_base_code_v4b.c: 558:     TRISA = 0b00001101;
+   927  0156  300D               	movlw	13
+   928  0157  0085               	movwf	5	;volatile
+   929                           
+   930                           ;PF906_base_code_v4b.c: 559:     TRISB = 0b01110000;
+   931  0158  3070               	movlw	112
+   932  0159  0086               	movwf	6	;volatile
+   933                           
+   934                           ;PF906_base_code_v4b.c: 560:     TRISC = 0b10001111;
+   935  015A  308F               	movlw	143
+   936  015B  0087               	movwf	7	;volatile
+   937  015C                     l1011:
+   938                           
+   939                           ;PF906_base_code_v4b.c: 567:     ANSEL = 0x00;
+   940  015C  1283               	bcf	3,5	;RP0=0, select bank2
+   941  015D  1703               	bsf	3,6	;RP1=1, select bank2
+   942  015E  019E               	clrf	30	;volatile
+   943  015F                     l1013:
+   944                           
+   945                           ;PF906_base_code_v4b.c: 568:     ANSELH = 0x00;
+   946  015F  019F               	clrf	31	;volatile
+   947  0160                     l1015:
+   948                           
+   949                           ;PF906_base_code_v4b.c: 570:     ANSELbits.ANS2 = 0x01;
+   950  0160  151E               	bsf	30,2	;volatile
+   951  0161                     l1017:
+   952                           
+   953                           ;PF906_base_code_v4b.c: 571:     ANSELbits.ANS4 = 0x01;
+   954  0161  161E               	bsf	30,4	;volatile
+   955  0162                     l1019:
+   956                           
+   957                           ;PF906_base_code_v4b.c: 572:     ANSELbits.ANS5 = 0x01;
+   958  0162  169E               	bsf	30,5	;volatile
+   959  0163                     l1021:
+   960                           
+   961                           ;PF906_base_code_v4b.c: 576:     startPWM();
+   962  0163  118A  21C3  118A   	fcall	_startPWM
+   963  0166                     l1023:
+   964                           
+   965                           ;PF906_base_code_v4b.c: 598:     T1CON = 0b00100000;
+   966  0166  3020               	movlw	32
+   967  0167  1283               	bcf	3,5	;RP0=0, select bank0
+   968  0168  1303               	bcf	3,6	;RP1=0, select bank0
+   969  0169  0090               	movwf	16	;volatile
+   970  016A                     l1025:
+   971                           
+   972                           ;PF906_base_code_v4b.c: 599:     TMR1L = 0xAF;
+   973  016A  30AF               	movlw	175
+   974  016B  008E               	movwf	14	;volatile
+   975  016C                     l1027:
+   976                           
+   977                           ;PF906_base_code_v4b.c: 600:     TMR1H = 0x3C;
+   978  016C  303C               	movlw	60
+   979  016D  008F               	movwf	15	;volatile
+   980  016E                     l1029:
+   981                           
+   982                           ;PF906_base_code_v4b.c: 601:     PIE1bits.CCP1IE = 0x00;
+   983  016E  1683               	bsf	3,5	;RP0=1, select bank1
+   984  016F  1303               	bcf	3,6	;RP1=0, select bank1
+   985  0170  110C               	bcf	12,2	;volatile
+   986  0171                     l1031:
+   987                           
+   988                           ;PF906_base_code_v4b.c: 602:     PIE1bits.TMR1IE = 0x01;
+   989  0171  140C               	bsf	12,0	;volatile
+   990                           
+   991                           ;PF906_base_code_v4b.c: 608:     setupactualSpeedPulses();
+   992  0172  118A  220A  118A   	fcall	_setupactualSpeedPulses
+   993  0175                     l159:
+   994  0175  0008               	return
+   995  0176                     __end_of_doSetup:
+   996                           
+   997                           	psect	text2
+   998  01C3                     __ptext2:	
+   999 ;; *************** function _startPWM *****************
+  1000 ;; Defined at:
+  1001 ;;		line 759 in file "PF906_base_code_v4b.c"
+  1002 ;; Parameters:    Size  Location     Type
+  1003 ;;		None
+  1004 ;; Auto vars:     Size  Location     Type
+  1005 ;;		None
+  1006 ;; Return value:  Size  Location     Type
+  1007 ;;                  1    wreg      void 
+  1008 ;; Registers used:
+  1009 ;;		wreg, status,2, status,0
+  1010 ;; Tracked objects:
+  1011 ;;		On entry : 0/0
+  1012 ;;		On exit  : 0/0
+  1013 ;;		Unchanged: 0/0
+  1014 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+  1015 ;;      Params:         0       0       0       0
+  1016 ;;      Locals:         0       0       0       0
+  1017 ;;      Temps:          0       0       0       0
+  1018 ;;      Totals:         0       0       0       0
+  1019 ;;Total ram usage:        0 bytes
+  1020 ;; Hardware stack levels used: 1
+  1021 ;; Hardware stack levels required when called: 1
+  1022 ;; This function calls:
+  1023 ;;		Nothing
+  1024 ;; This function is called by:
+  1025 ;;		_doSetup
+  1026 ;; This function uses a non-reentrant model
+  1027 ;;
+  1028                           
+  1029  01C3                     _startPWM:	
+  1030                           ;psect for function _startPWM
+  1031                           
+  1032  01C3                     l971:	
+  1033                           ;incstack = 0
+  1034                           ; Regs used in _startPWM: [wreg+status,2+status,0]
+  1035                           
+  1036                           
+  1037                           ;PF906_base_code_v4b.c: 776:     TRISCbits.TRISC5 = 0x01;
+  1038  01C3  1683               	bsf	3,5	;RP0=1, select bank1
+  1039  01C4  1303               	bcf	3,6	;RP1=0, select bank1
+  1040  01C5  1687               	bsf	7,5	;volatile
+  1041  01C6                     l973:
+  1042                           
+  1043                           ;PF906_base_code_v4b.c: 790:     PR2 = 0x65;
+  1044  01C6  3065               	movlw	101
+  1045  01C7  0092               	movwf	18	;volatile
+  1046                           
+  1047                           ;PF906_base_code_v4b.c: 804:     CCP1CON = 0b00001110;
+  1048  01C8  300E               	movlw	14
+  1049  01C9  1283               	bcf	3,5	;RP0=0, select bank0
+  1050  01CA  1303               	bcf	3,6	;RP1=0, select bank0
+  1051  01CB  0097               	movwf	23	;volatile
+  1052                           
+  1053                           ;PF906_base_code_v4b.c: 807:     PSTRCON = 0b00000001;
+  1054  01CC  3001               	movlw	1
+  1055  01CD  1683               	bsf	3,5	;RP0=1, select bank3
+  1056  01CE  1703               	bsf	3,6	;RP1=1, select bank3
+  1057  01CF  009D               	movwf	29	;volatile
+  1058  01D0                     l975:
+  1059                           
+  1060                           ;PF906_base_code_v4b.c: 811:     CCP1CONbits.DC1B = 0;
+  1061  01D0  30CF               	movlw	-49
+  1062  01D1  1283               	bcf	3,5	;RP0=0, select bank0
+  1063  01D2  1303               	bcf	3,6	;RP1=0, select bank0
+  1064  01D3  0597               	andwf	23,f	;volatile
+  1065  01D4                     l977:
+  1066                           
+  1067                           ;PF906_base_code_v4b.c: 812:     CCPR1L = 0;
+  1068  01D4  0195               	clrf	21	;volatile
+  1069  01D5                     l979:
+  1070                           
+  1071                           ;PF906_base_code_v4b.c: 816:     PIR1bits.TMR2IF = 0x00;
+  1072  01D5  108C               	bcf	12,1	;volatile
+  1073  01D6                     l981:
+  1074                           
+  1075                           ;PF906_base_code_v4b.c: 830:     T2CONbits.T2CKPS = 0x00;
+  1076  01D6  30FC               	movlw	-4
+  1077  01D7  0592               	andwf	18,f	;volatile
+  1078  01D8                     l983:
+  1079                           
+  1080                           ;PF906_base_code_v4b.c: 833:     T2CONbits.TMR2ON = 0x01;
+  1081  01D8  1512               	bsf	18,2	;volatile
+  1082  01D9                     l183:	
+  1083                           ;PF906_base_code_v4b.c: 837:     while (!PIR1bits.TMR2IF) {};
+  1084                           
+  1085  01D9  1C8C               	btfss	12,1	;volatile
+  1086  01DA  29DC               	goto	u231
+  1087  01DB  29DD               	goto	u230
+  1088  01DC                     u231:
+  1089  01DC  29D9               	goto	l183
+  1090  01DD                     u230:
+  1091  01DD                     l185:
+  1092                           
+  1093                           ;PF906_base_code_v4b.c: 840:     TRISCbits.TRISC5 = 0x00;
+  1094  01DD  1683               	bsf	3,5	;RP0=1, select bank1
+  1095  01DE  1303               	bcf	3,6	;RP1=0, select bank1
+  1096  01DF  1287               	bcf	7,5	;volatile
+  1097  01E0                     l186:
+  1098  01E0  0008               	return
+  1099  01E1                     __end_of_startPWM:
+  1100                           
+  1101                           	psect	text3
+  1102  020A                     __ptext3:	
+  1103 ;; *************** function _setupactualSpeedPulses *****************
+  1104 ;; Defined at:
+  1105 ;;		line 705 in file "PF906_base_code_v4b.c"
+  1106 ;; Parameters:    Size  Location     Type
+  1107 ;;		None
+  1108 ;; Auto vars:     Size  Location     Type
+  1109 ;;		None
+  1110 ;; Return value:  Size  Location     Type
+  1111 ;;                  1    wreg      void 
+  1112 ;; Registers used:
+  1113 ;;		wreg
+  1114 ;; Tracked objects:
+  1115 ;;		On entry : 0/0
+  1116 ;;		On exit  : 0/0
+  1117 ;;		Unchanged: 0/0
+  1118 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+  1119 ;;      Params:         0       0       0       0
+  1120 ;;      Locals:         0       0       0       0
+  1121 ;;      Temps:          0       0       0       0
+  1122 ;;      Totals:         0       0       0       0
+  1123 ;;Total ram usage:        0 bytes
+  1124 ;; Hardware stack levels used: 1
+  1125 ;; Hardware stack levels required when called: 1
+  1126 ;; This function calls:
+  1127 ;;		Nothing
+  1128 ;; This function is called by:
+  1129 ;;		_doSetup
+  1130 ;; This function uses a non-reentrant model
+  1131 ;;
+  1132                           
+  1133  020A                     _setupactualSpeedPulses:	
+  1134                           ;psect for function _setupactualSpeedPulses
+  1135                           
+  1136  020A                     l985:	
+  1137                           ;incstack = 0
+  1138                           ; Regs used in _setupactualSpeedPulses: [wreg]
+  1139                           
+  1140                           
+  1141                           ;PF906_base_code_v4b.c: 742:     PIE2bits.C1IE =0x01;
+  1142  020A  1683               	bsf	3,5	;RP0=1, select bank1
+  1143  020B  1303               	bcf	3,6	;RP1=0, select bank1
+  1144  020C  168D               	bsf	13,5	;volatile
+  1145  020D                     l987:
+  1146                           
+  1147                           ;PF906_base_code_v4b.c: 747:     CM1CON0 = 0b01000111;
+  1148  020D  3047               	movlw	71
+  1149  020E  1283               	bcf	3,5	;RP0=0, select bank2
+  1150  020F  1703               	bsf	3,6	;RP1=1, select bank2
+  1151  0210  0099               	movwf	25	;volatile
+  1152                           
+  1153                           ;PF906_base_code_v4b.c: 752:     VRCON = 0b00010000;
+  1154  0211  3010               	movlw	16
+  1155  0212  0098               	movwf	24	;volatile
+  1156  0213                     l180:
+  1157  0213  0008               	return
+  1158  0214                     __end_of_setupactualSpeedPulses:
+  1159                           
+  1160                           	psect	text4
+  1161  00E9                     __ptext4:	
+  1162 ;; *************** function _FlashLED1 *****************
+  1163 ;; Defined at:
+  1164 ;;		line 451 in file "PF906_base_code_v4b.c"
+  1165 ;; Parameters:    Size  Location     Type
+  1166 ;;  times           1    wreg     unsigned char 
+  1167 ;;  period          1    2[COMMON] unsigned char 
+  1168 ;; Auto vars:     Size  Location     Type
+  1169 ;;  times           1    5[COMMON] unsigned char 
+  1170 ;;  p               1    6[COMMON] unsigned char 
+  1171 ;; Return value:  Size  Location     Type
+  1172 ;;                  1    wreg      void 
+  1173 ;; Registers used:
+  1174 ;;		wreg, status,2, status,0
+  1175 ;; Tracked objects:
+  1176 ;;		On entry : 0/0
+  1177 ;;		On exit  : 0/0
+  1178 ;;		Unchanged: 0/0
+  1179 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+  1180 ;;      Params:         1       0       0       0
+  1181 ;;      Locals:         2       0       0       0
+  1182 ;;      Temps:          2       0       0       0
+  1183 ;;      Totals:         5       0       0       0
+  1184 ;;Total ram usage:        5 bytes
+  1185 ;; Hardware stack levels used: 1
+  1186 ;; Hardware stack levels required when called: 1
+  1187 ;; This function calls:
+  1188 ;;		Nothing
+  1189 ;; This function is called by:
+  1190 ;;		_main
+  1191 ;; This function uses a non-reentrant model
+  1192 ;;
+  1193                           
+  1194  00E9                     _FlashLED1:	
+  1195                           ;psect for function _FlashLED1
+  1196                           
+  1197                           
+  1198                           ;incstack = 0
+  1199                           ; Regs used in _FlashLED1: [wreg+status,2+status,0]
+  1200                           ;FlashLED1@times stored from wreg
+  1201  00E9  00F5               	movwf	FlashLED1@times
+  1202  00EA                     l1047:
+  1203                           
+  1204                           ;PF906_base_code_v4b.c: 453:     uint8_t p = period;
+  1205  00EA  0872               	movf	FlashLED1@period,w
+  1206  00EB  00F3               	movwf	??_FlashLED1
+  1207  00EC  0873               	movf	??_FlashLED1,w
+  1208  00ED  00F6               	movwf	FlashLED1@p
+  1209                           
+  1210                           ;PF906_base_code_v4b.c: 454:     if (times > 5) {times = 5;}
+  1211  00EE  3006               	movlw	6
+  1212  00EF  0275               	subwf	FlashLED1@times,w
+  1213  00F0  1C03               	skipc
+  1214  00F1  28F3               	goto	u251
+  1215  00F2  28F4               	goto	u250
+  1216  00F3                     u251:
+  1217  00F3  28F8               	goto	l148
+  1218  00F4                     u250:
+  1219  00F4                     l1049:
+  1220  00F4  3005               	movlw	5
+  1221  00F5  00F3               	movwf	??_FlashLED1
+  1222  00F6  0873               	movf	??_FlashLED1,w
+  1223  00F7  00F5               	movwf	FlashLED1@times
+  1224  00F8                     l148:
+  1225                           
+  1226                           ;PF906_base_code_v4b.c: 455:     if (period > 10) {period = 10;}
+  1227  00F8  300B               	movlw	11
+  1228  00F9  0272               	subwf	FlashLED1@period,w
+  1229  00FA  1C03               	skipc
+  1230  00FB  28FD               	goto	u261
+  1231  00FC  28FE               	goto	u260
+  1232  00FD                     u261:
+  1233  00FD  2902               	goto	l1053
+  1234  00FE                     u260:
+  1235  00FE                     l1051:
+  1236  00FE  300A               	movlw	10
+  1237  00FF  00F3               	movwf	??_FlashLED1
+  1238  0100  0873               	movf	??_FlashLED1,w
+  1239  0101  00F2               	movwf	FlashLED1@period
+  1240  0102                     l1053:
+  1241                           
+  1242                           ;PF906_base_code_v4b.c: 457:         PORTCbits.RC4 = 0x01;
+  1243  0102  1283               	bcf	3,5	;RP0=0, select bank0
+  1244  0103  1303               	bcf	3,6	;RP1=0, select bank0
+  1245  0104  1607               	bsf	7,4	;volatile
+  1246  0105                     l151:	
+  1247                           ;PF906_base_code_v4b.c: 458:         do {_delay((unsigned long)((50)*(8000000/4000.0)));
+  1248                           
+  1249  0105  3082               	movlw	130
+  1250  0106  00F4               	movwf	??_FlashLED1+1
+  1251  0107  30DD               	movlw	221
+  1252  0108  00F3               	movwf	??_FlashLED1
+  1253  0109                     u537:
+  1254  0109  0BF3               	decfsz	??_FlashLED1,f
+  1255  010A  2909               	goto	u537
+  1256  010B  0BF4               	decfsz	??_FlashLED1+1,f
+  1257  010C  2909               	goto	u537
+  1258  010D  290E               	nop2
+  1259  010E                     l1055:
+  1260                           
+  1261                           ;PF906_base_code_v4b.c: 459:            } while (--p);
+  1262  010E  3001               	movlw	1
+  1263  010F  02F6               	subwf	FlashLED1@p,f
+  1264  0110  1D03               	btfss	3,2
+  1265  0111  2913               	goto	u271
+  1266  0112  2914               	goto	u270
+  1267  0113                     u271:
+  1268  0113  2905               	goto	l151
+  1269  0114                     u270:
+  1270  0114                     l1057:
+  1271                           
+  1272                           ;PF906_base_code_v4b.c: 460:         p = period;
+  1273  0114  0872               	movf	FlashLED1@period,w
+  1274  0115  00F3               	movwf	??_FlashLED1
+  1275  0116  0873               	movf	??_FlashLED1,w
+  1276  0117  00F6               	movwf	FlashLED1@p
+  1277  0118                     l1059:
+  1278                           
+  1279                           ;PF906_base_code_v4b.c: 461:         PORTCbits.RC4 = 0x00;
+  1280  0118  1283               	bcf	3,5	;RP0=0, select bank0
+  1281  0119  1303               	bcf	3,6	;RP1=0, select bank0
+  1282  011A  1207               	bcf	7,4	;volatile
+  1283  011B                     l153:	
+  1284                           ;PF906_base_code_v4b.c: 462:         do {_delay((unsigned long)((50)*(8000000/4000.0)));
+  1285                           
+  1286  011B  3082               	movlw	130
+  1287  011C  00F4               	movwf	??_FlashLED1+1
+  1288  011D  30DD               	movlw	221
+  1289  011E  00F3               	movwf	??_FlashLED1
+  1290  011F                     u547:
+  1291  011F  0BF3               	decfsz	??_FlashLED1,f
+  1292  0120  291F               	goto	u547
+  1293  0121  0BF4               	decfsz	??_FlashLED1+1,f
+  1294  0122  291F               	goto	u547
+  1295  0123  2924               	nop2
+  1296  0124                     l1061:
+  1297                           
+  1298                           ;PF906_base_code_v4b.c: 463:            } while (--p);
+  1299  0124  3001               	movlw	1
+  1300  0125  02F6               	subwf	FlashLED1@p,f
+  1301  0126  1D03               	btfss	3,2
+  1302  0127  2929               	goto	u281
+  1303  0128  292A               	goto	u280
+  1304  0129                     u281:
+  1305  0129  291B               	goto	l153
+  1306  012A                     u280:
+  1307  012A                     l1063:
+  1308                           
+  1309                           ;PF906_base_code_v4b.c: 464:         p = period;
+  1310  012A  0872               	movf	FlashLED1@period,w
+  1311  012B  00F3               	movwf	??_FlashLED1
+  1312  012C  0873               	movf	??_FlashLED1,w
+  1313  012D  00F6               	movwf	FlashLED1@p
+  1314  012E                     l1065:
+  1315                           
+  1316                           ;PF906_base_code_v4b.c: 465:         } while (--times);
+  1317  012E  3001               	movlw	1
+  1318  012F  02F5               	subwf	FlashLED1@times,f
+  1319  0130  1D03               	btfss	3,2
+  1320  0131  2933               	goto	u291
+  1321  0132  2934               	goto	u290
+  1322  0133                     u291:
+  1323  0133  2902               	goto	l1053
+  1324  0134                     u290:
+  1325  0134                     l155:
+  1326                           
+  1327                           ;PF906_base_code_v4b.c: 466:        PORTCbits.RC4 = 0x01;
+  1328  0134  1283               	bcf	3,5	;RP0=0, select bank0
+  1329  0135  1303               	bcf	3,6	;RP1=0, select bank0
+  1330  0136  1607               	bsf	7,4	;volatile
+  1331  0137                     l156:
+  1332  0137  0008               	return
+  1333  0138                     __end_of_FlashLED1:
+  1334                           
+  1335                           	psect	text5
+  1336  01A3                     __ptext5:	
+  1337 ;; *************** function _CheckHV *****************
+  1338 ;; Defined at:
+  1339 ;;		line 668 in file "PF906_base_code_v4b.c"
+  1340 ;; Parameters:    Size  Location     Type
+  1341 ;;		None
+  1342 ;; Auto vars:     Size  Location     Type
+  1343 ;;		None
+  1344 ;; Return value:  Size  Location     Type
+  1345 ;;                  2    2[COMMON] int 
+  1346 ;; Registers used:
+  1347 ;;		wreg, status,2
+  1348 ;; Tracked objects:
+  1349 ;;		On entry : 0/0
+  1350 ;;		On exit  : 0/0
+  1351 ;;		Unchanged: 0/0
+  1352 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+  1353 ;;      Params:         2       0       0       0
+  1354 ;;      Locals:         0       0       0       0
+  1355 ;;      Temps:          2       0       0       0
+  1356 ;;      Totals:         4       0       0       0
+  1357 ;;Total ram usage:        4 bytes
+  1358 ;; Hardware stack levels used: 1
+  1359 ;; Hardware stack levels required when called: 1
+  1360 ;; This function calls:
+  1361 ;;		Nothing
+  1362 ;; This function is called by:
+  1363 ;;		_main
+  1364 ;; This function uses a non-reentrant model
+  1365 ;;
+  1366                           
+  1367  01A3                     _CheckHV:	
+  1368                           ;psect for function _CheckHV
+  1369                           
+  1370  01A3                     l1033:	
+  1371                           ;incstack = 0
+  1372                           ; Regs used in _CheckHV: [wreg+status,2]
+  1373                           
+  1374                           
+  1375                           ;PF906_base_code_v4b.c: 671:     ADRESL = 0x00;
+  1376  01A3  1683               	bsf	3,5	;RP0=1, select bank1
+  1377  01A4  1303               	bcf	3,6	;RP1=0, select bank1
+  1378  01A5  019E               	clrf	30	;volatile
+  1379                           
+  1380                           ;PF906_base_code_v4b.c: 672:     ADRESH = 0x00;
+  1381  01A6  1283               	bcf	3,5	;RP0=0, select bank0
+  1382  01A7  1303               	bcf	3,6	;RP1=0, select bank0
+  1383  01A8  019E               	clrf	30	;volatile
+  1384  01A9                     l1035:
+  1385                           
+  1386                           ;PF906_base_code_v4b.c: 674:     ADCON0bits.ADON = 0x0;
+  1387  01A9  101F               	bcf	31,0	;volatile
+  1388  01AA                     l1037:
+  1389                           
+  1390                           ;PF906_base_code_v4b.c: 682:     ADCON0 = 0b10010101;
+  1391  01AA  3095               	movlw	149
+  1392  01AB  009F               	movwf	31	;volatile
+  1393  01AC                     l1039:
+  1394                           
+  1395                           ;PF906_base_code_v4b.c: 689:     _delay((unsigned long)((5)*(8000000/4000.0)));
+  1396  01AC  300D               	movlw	13
+  1397  01AD  00F5               	movwf	??_CheckHV+1
+  1398  01AE  30FB               	movlw	251
+  1399  01AF  00F4               	movwf	??_CheckHV
+  1400  01B0                     u557:
+  1401  01B0  0BF4               	decfsz	??_CheckHV,f
+  1402  01B1  29B0               	goto	u557
+  1403  01B2  0BF5               	decfsz	??_CheckHV+1,f
+  1404  01B3  29B0               	goto	u557
+  1405  01B4  29B5               	nop2
+  1406  01B5                     l1041:
+  1407                           
+  1408                           ;PF906_base_code_v4b.c: 695:     ADCON0bits.GO_nDONE = 0x01;
+  1409  01B5  1283               	bcf	3,5	;RP0=0, select bank0
+  1410  01B6  1303               	bcf	3,6	;RP1=0, select bank0
+  1411  01B7  149F               	bsf	31,1	;volatile
+  1412  01B8                     l174:	
+  1413                           ;PF906_base_code_v4b.c: 698:     while (ADCON0bits.GO_nDONE) {};
+  1414                           
+  1415  01B8  189F               	btfsc	31,1	;volatile
+  1416  01B9  29BB               	goto	u241
+  1417  01BA  29BC               	goto	u240
+  1418  01BB                     u241:
+  1419  01BB  29B8               	goto	l174
+  1420  01BC                     u240:
+  1421  01BC                     l1043:
+  1422                           
+  1423                           ;PF906_base_code_v4b.c: 701:     return (ADRESL | (ADRESH<<8));
+  1424  01BC  081E               	movf	30,w	;volatile
+  1425  01BD  00F3               	movwf	?_CheckHV+1
+  1426  01BE  1683               	bsf	3,5	;RP0=1, select bank1
+  1427  01BF  1303               	bcf	3,6	;RP1=0, select bank1
+  1428  01C0  081E               	movf	30,w	;volatile
+  1429  01C1  00F2               	movwf	?_CheckHV
+  1430  01C2                     l177:
+  1431  01C2  0008               	return
+  1432  01C3                     __end_of_CheckHV:
+  1433                           
+  1434                           	psect	text6
+  1435  0176                     __ptext6:	
+  1436 ;; *************** function _Isr *****************
+  1437 ;; Defined at:
+  1438 ;;		line 846 in file "PF906_base_code_v4b.c"
+  1439 ;; Parameters:    Size  Location     Type
+  1440 ;;		None
+  1441 ;; Auto vars:     Size  Location     Type
+  1442 ;;		None
+  1443 ;; Return value:  Size  Location     Type
+  1444 ;;                  1    wreg      void 
+  1445 ;; Registers used:
+  1446 ;;		wreg
+  1447 ;; Tracked objects:
+  1448 ;;		On entry : 0/0
+  1449 ;;		On exit  : 0/0
+  1450 ;;		Unchanged: 0/0
+  1451 ;; Data sizes:     COMMON   BANK0   BANK1   BANK2
+  1452 ;;      Params:         0       0       0       0
+  1453 ;;      Locals:         0       0       0       0
+  1454 ;;      Temps:          2       0       0       0
+  1455 ;;      Totals:         2       0       0       0
+  1456 ;;Total ram usage:        2 bytes
+  1457 ;; Hardware stack levels used: 1
+  1458 ;; This function calls:
+  1459 ;;		Nothing
+  1460 ;; This function is called by:
+  1461 ;;		Interrupt level 1
+  1462 ;; This function uses a non-reentrant model
+  1463 ;;
+  1464                           
+  1465  0176                     _Isr:	
+  1466                           ;psect for function _Isr
+  1467                           
+  1468  0176                     i1l1123:
+  1469                           
+  1470                           ;PF906_base_code_v4b.c: 850:     INTCONbits.GIE = 0x00;
+  1471  0176  138B               	bcf	11,7	;volatile
+  1472                           
+  1473                           ;PF906_base_code_v4b.c: 854:     if (PIE2bits.C1IE && PIR2bits.C1IF) {
+  1474  0177  1683               	bsf	3,5	;RP0=1, select bank1
+  1475  0178  1303               	bcf	3,6	;RP1=0, select bank1
+  1476  0179  1E8D               	btfss	13,5	;volatile
+  1477  017A  297C               	goto	u39_21
+  1478  017B  297D               	goto	u39_20
+  1479  017C                     u39_21:
+  1480  017C  298A               	goto	i1l1131
+  1481  017D                     u39_20:
+  1482  017D                     i1l1125:
+  1483  017D  1283               	bcf	3,5	;RP0=0, select bank0
+  1484  017E  1303               	bcf	3,6	;RP1=0, select bank0
+  1485  017F  1E8D               	btfss	13,5	;volatile
+  1486  0180  2982               	goto	u40_21
+  1487  0181  2983               	goto	u40_20
+  1488  0182                     u40_21:
+  1489  0182  298A               	goto	i1l1131
+  1490  0183                     u40_20:
+  1491  0183                     i1l1127:
+  1492                           
+  1493                           ;PF906_base_code_v4b.c: 855:         ++actualSpeedPulses;
+  1494  0183  3001               	movlw	1
+  1495  0184  07AC               	addwf	_actualSpeedPulses,f	;volatile
+  1496  0185  1803               	skipnc
+  1497  0186  0AAD               	incf	_actualSpeedPulses+1,f	;volatile
+  1498  0187  3000               	movlw	0
+  1499  0188  07AD               	addwf	_actualSpeedPulses+1,f	;volatile
+  1500  0189                     i1l1129:
+  1501                           
+  1502                           ;PF906_base_code_v4b.c: 856:         PIR2bits.C1IF = 0x00;
+  1503  0189  128D               	bcf	13,5	;volatile
+  1504  018A                     i1l1131:
+  1505                           
+  1506                           ;PF906_base_code_v4b.c: 860:     if (PIE1bits.TMR1IE && PIR1bits.TMR1IF) {
+  1507  018A  1683               	bsf	3,5	;RP0=1, select bank1
+  1508  018B  1303               	bcf	3,6	;RP1=0, select bank1
+  1509  018C  1C0C               	btfss	12,0	;volatile
+  1510  018D  298F               	goto	u41_21
+  1511  018E  2990               	goto	u41_20
+  1512  018F                     u41_21:
+  1513  018F  299C               	goto	i1l193
+  1514  0190                     u41_20:
+  1515  0190                     i1l1133:
+  1516  0190  1283               	bcf	3,5	;RP0=0, select bank0
+  1517  0191  1303               	bcf	3,6	;RP1=0, select bank0
+  1518  0192  1C0C               	btfss	12,0	;volatile
+  1519  0193  2995               	goto	u42_21
+  1520  0194  2996               	goto	u42_20
+  1521  0195                     u42_21:
+  1522  0195  299C               	goto	i1l193
+  1523  0196                     u42_20:
+  1524  0196                     i1l1135:
+  1525                           
+  1526                           ;PF906_base_code_v4b.c: 862:         CM1CON0bits.C1ON = 0x00;
+  1527  0196  1283               	bcf	3,5	;RP0=0, select bank2
+  1528  0197  1703               	bsf	3,6	;RP1=1, select bank2
+  1529  0198  1399               	bcf	25,7	;volatile
+  1530                           
+  1531                           ;PF906_base_code_v4b.c: 863:         T1CONbits.TMR1ON = 0x00;
+  1532  0199  1283               	bcf	3,5	;RP0=0, select bank0
+  1533  019A  1303               	bcf	3,6	;RP1=0, select bank0
+  1534  019B  1010               	bcf	16,0	;volatile
+  1535  019C                     i1l193:
+  1536  019C  0871               	movf	??_Isr+1,w
+  1537  019D  008A               	movwf	10
+  1538  019E  0E70               	swapf	??_Isr,w
+  1539  019F  0083               	movwf	3
+  1540  01A0  0EFE               	swapf	btemp,f
+  1541  01A1  0E7E               	swapf	btemp,w
+  1542  01A2  0009               	retfie
+  1543  01A3                     __end_of_Isr:
+  1544  007E                     btemp	set	126	;btemp
+  1545  007E                     wtemp0	set	126
+  1546                           
+  1547                           	psect	intentry
+  1548  0004                     __pintentry:	
+  1549                           ;incstack = 0
+  1550                           ; Regs used in _Isr: [wreg]
+  1551                           
+  1552  0004                     interrupt_function:
+  1553  007E                     saved_w	set	btemp
+  1554  0004  00FE               	movwf	btemp
+  1555  0005  0E03               	swapf	3,w
+  1556  0006  00F0               	movwf	??_Isr
+  1557  0007  080A               	movf	10,w
+  1558  0008  00F1               	movwf	??_Isr+1
+  1559  0009  118A  2976         	ljmp	_Isr
+  1560                           
+  1561                           	psect	idloc
+  1562                           
+  1563                           ;Config register IDLOC0 @ 0x2000
+  1564                           ;	unspecified, using default values
+  1565  2000                     	org	8192
+  1566  2000  3FFF               	dw	16383
+  1567                           
+  1568                           ;Config register IDLOC1 @ 0x2001
+  1569                           ;	unspecified, using default values
+  1570  2001                     	org	8193
+  1571  2001  3FFF               	dw	16383
+  1572                           
+  1573                           ;Config register IDLOC2 @ 0x2002
+  1574                           ;	unspecified, using default values
+  1575  2002                     	org	8194
+  1576  2002  3FFF               	dw	16383
+  1577                           
+  1578                           ;Config register IDLOC3 @ 0x2003
+  1579                           ;	unspecified, using default values
+  1580  2003                     	org	8195
+  1581  2003  3FFF               	dw	16383
+  1582                           
+  1583                           	psect	config
+  1584                           
+  1585                           ;Config register CONFIG @ 0x2007
+  1586                           ;	Oscillator Selection bits
+  1587                           ;	FOSC = INTRCIO, INTOSCIO oscillator: I/O function on RA4/OSC2/CLKOUT pin, I/O function
+      +                           on RA5/OSC1/CLKIN
+  1588                           ;	Watchdog Timer Enable bit
+  1589                           ;	WDTE = OFF, WDT disabled and can be enabled by SWDTEN bit of the WDTCON register
+  1590                           ;	Power-up Timer Enable bit
+  1591                           ;	PWRTE = ON, PWRT enabled
+  1592                           ;	MCLR Pin Function Select bit
+  1593                           ;	MCLRE = ON, MCLR pin function is MCLR
+  1594                           ;	Code Protection bit
+  1595                           ;	CP = OFF, Program memory code protection is disabled
+  1596                           ;	Data Code Protection bit
+  1597                           ;	CPD = OFF, Data memory code protection is disabled
+  1598                           ;	Brown-out Reset Selection bits
+  1599                           ;	BOREN = OFF, BOR disabled
+  1600                           ;	Internal External Switchover bit
+  1601                           ;	IESO = OFF, Internal External Switchover mode is disabled
+  1602                           ;	Fail-Safe Clock Monitor Enabled bit
+  1603                           ;	FCMEN = OFF, Fail-Safe Clock Monitor is disabled
+  1604  2007                     	org	8199
+  1605  2007  30E4               	dw	12516
+
+Data Sizes:
+    Strings     0
+    Constant    4
+    Data        14
+    BSS         11
+    Persistent  0
+    Stack       0
+
+Auto Spaces:
+    Space          Size  Autos    Used
+    COMMON           14      7      11
+    BANK0            80      3      24
+    BANK1            80      0       0
+    BANK2            80      0       0
+
+Pointer List with Targets:
+
+    None.
+
+Critical Paths under _main in COMMON
+
+    _main->_FlashLED1
+
+Critical Paths under _Isr in COMMON
+
+    None.
+
+Critical Paths under _main in BANK0
+
+    None.
+
+Critical Paths under _Isr in BANK0
+
+    None.
+
+Critical Paths under _main in BANK1
+
+    None.
+
+Critical Paths under _Isr in BANK1
+
+    None.
+
+Critical Paths under _main in BANK2
+
+    None.
+
+Critical Paths under _Isr in BANK2
+
+    None.
+
+Call Graph Tables:
+
+ ---------------------------------------------------------------------------------
+ (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
+ ---------------------------------------------------------------------------------
+ (0) _main                                                 3     3      0     257
+                                              0 BANK0      3     3      0
+                            _CheckHV
+                          _FlashLED1
+                            _doSetup
+ ---------------------------------------------------------------------------------
+ (1) _doSetup                                              0     0      0       0
+             _setupactualSpeedPulses
+                           _startPWM
+ ---------------------------------------------------------------------------------
+ (2) _startPWM                                             0     0      0       0
+ ---------------------------------------------------------------------------------
+ (2) _setupactualSpeedPulses                               0     0      0       0
+ ---------------------------------------------------------------------------------
+ (1) _FlashLED1                                            5     4      1     257
+                                              2 COMMON     5     4      1
+ ---------------------------------------------------------------------------------
+ (1) _CheckHV                                              4     2      2       0
+                                              2 COMMON     4     2      2
+ ---------------------------------------------------------------------------------
+ Estimated maximum stack depth 2
+ ---------------------------------------------------------------------------------
+ (Depth) Function   	        Calls       Base Space   Used Autos Params    Refs
+ ---------------------------------------------------------------------------------
+ (3) _Isr                                                  2     2      0       0
+                                              0 COMMON     2     2      0
+ ---------------------------------------------------------------------------------
+ Estimated maximum stack depth 3
+ ---------------------------------------------------------------------------------
+
+ Call Graph Graphs:
+
+ _main (ROOT)
+   _CheckHV
+   _FlashLED1
+   _doSetup
+     _setupactualSpeedPulses
+     _startPWM
+
+ _Isr (ROOT)
+
+ Address spaces:
+Name               Size   Autos  Total    Cost      Usage
+SFR3                 0      0       0       4        0.0%
+BITSFR3              0      0       0       4        0.0%
+BANK2               50      0       0       7        0.0%
+BITBANK2            50      0       0       6        0.0%
+SFR2                 0      0       0       5        0.0%
+BITSFR2              0      0       0       5        0.0%
+BANK1               50      0       0       5        0.0%
+BITBANK1            50      0       0       4        0.0%
+SFR1                 0      0       0       2        0.0%
+BITSFR1              0      0       0       2        0.0%
+BANK0               50      3      18       3       30.0%
+BITBANK0            50      0       0       9        0.0%
+SFR0                 0      0       0       1        0.0%
+BITSFR0              0      0       0       1        0.0%
+COMMON               E      7       B       1       78.6%
+BITCOMMON            E      0       0       0        0.0%
+CODE                 0      0       0       0        0.0%
+DATA                 0      0      23      10        0.0%
+ABS                  0      0      23       8        0.0%
+NULL                 0      0       0       0        0.0%
+STACK                0      0       0       2        0.0%
+EEDATA             100      0       0       0        0.0%
+
+
+Microchip Technology PIC Macro Assembler V2.36 build 20220127204148 
+Symbol Table                                                                                   Tue Dec 27 11:56:28 2022
+
+                               pc 0002                                _HV 0032                                _IV 0030  
+                              _MV 002E                                fsr 0004            __end_of_minimumVoltage 0208  
+                             l130 0071                               l134 007B                               l151 0105  
+                             l135 00A7                               l153 011B                               l129 0060  
+                             l155 0134                               l156 0137                               l148 00F8  
+                             l180 0213                               l174 01B8                               l183 01D9  
+                             l159 0175                               l177 01C2                               l185 01DD  
+                             l186 01E0                               l971 01C3                               l981 01D6  
+                             l973 01C6                               l983 01D8                               l975 01D0  
+                             l991 0140                               l985 020A                               l977 01D4  
+                             l993 0141                               l987 020D                               l979 01D5  
+                             l995 0143                               l997 0147                               l989 0138  
+                             l999 0148                               u230 01DD                               u231 01DC  
+                             u240 01BC                               u241 01BB                               u250 00F4  
+                             u251 00F3                               u260 00FE                               u500 00D2  
+                             u261 00FD                               u501 00D1                               u270 0114  
+                             u510 00D6                               u430 0060                               _PR2 0092  
+                             u271 0113                               u511 00D5                               u431 005F  
+                             u280 012A                               u440 0077                               u281 0129  
+                             u441 0076                               u290 0134                               u450 009D  
+                             u291 0133                               u451 009C                               u435 005C  
+                             u460 00A3                               u461 00A2                               u470 00AD  
+                             u471 00AC                               u527 004B                               u480 00B2  
+                             u537 0109                               u481 00B1                               u547 011F  
+                             u557 01B0                               u495 00C7                               _Isr 0176  
+                             fsr0 0004                               indf 0000                    FlashLED1@times 0075  
+                            ?_Isr 0070                              l1001 0149                              l1011 015C  
+                            l1003 014C                              l1021 0163                              l1013 015F  
+                            l1005 014F                              l1031 0171                              l1023 0166  
+                            l1015 0160                              l1007 0150                              l1041 01B5  
+                            l1033 01A3                              l1025 016A                              l1017 0161  
+                            l1009 0153                              l1043 01BC                              l1035 01A9  
+                            l1051 00FE                              l1027 016C                              l1019 0162  
+                            l1037 01AA                              l1061 0124                              l1053 0102  
+                            l1029 016E                              l1141 0035                              l1039 01AC  
+                            l1063 012A                              l1055 010E                              l1047 00EA  
+                            l1151 0043                              l1143 0036                              l1065 012E  
+                            l1057 0114                              l1049 00F4                              l1161 0079  
+                            l1145 0037                              l1137 002F                              l1059 0118  
+                            l1171 00B2                              l1163 007C                              l1155 0053  
+                            l1147 0038                              l1139 0032                              l1181 00D6  
+                            l1173 00B4                              l1165 009D                              l1157 0065  
+                            l1149 0039                              l1191 00DC                              l1183 00D8  
+                            l1175 00C1                              l1167 00A3                              l1159 0077  
+                            l1185 00D9                              l1169 00AD                              l1177 00CE  
+                            l1187 00DA                              l1179 00D2                              l1189 00DB  
+                            _IOCA 0096                              _IOCB 0116                              _PIR1 000C  
+                            _PIR2 000D                              _main 002F                              btemp 007E  
+                 FlashLED1@period 0072                   __end_of_CheckHV 01C3                              start 000B  
+         ?_setupactualSpeedPulses 0070                             ??_Isr 0070                             ?_main 0070  
+                           _ANSEL 011E                             _T1CON 0010                             i1l193 019C  
+                           u40_20 0183                             u40_21 0182                             u41_20 0190  
+                           u41_21 018F                             _TMR1H 000F                             _TMR1L 000E  
+                           u42_20 0196                             u42_21 0195                             _PORTA 0005  
+                           _PORTB 0006                             _PORTC 0007                             u39_20 017D  
+                           u39_21 017C                             _TRISA 0085                             _TRISB 0086  
+                           _TRISC 0087                             _VRCON 0118                   __end_of_doSetup 0176  
+                           pclath 000A                             status 0003                             wtemp0 007E  
+  __end_of_setupactualSpeedPulses 0214                   __initialization 000D                      __end_of_main 00E9  
+                          ??_main 0035                   _desiredSpeedCtr 0077  _button_history_UserPowerOn_input 0078  
+                          _ADCON0 001F                            _ADCON1 009F                            _ADRESH 001E  
+                          _ADRESL 009E                            _CCPR1L 0015                            _ANSELH 011F  
+                       ??_CheckHV 0074                            i1l1131 018A                            i1l1123 0176  
+                          i1l1133 0190                            i1l1125 017D                            i1l1135 0196  
+                          i1l1127 0183                            i1l1129 0189                            _INTCON 000B  
+                          _OSCCON 008F                         ??_doSetup 0072                      __pdataCOMMON 0079  
+                          saved_w 007E                  __end_of_startPWM 01E1                 _actualSpeedPulses 002C  
+         __end_of__initialization 002C                 __end_of_FlashLED1 0138                    __pcstackCOMMON 0070  
+                    __pidataBANK0 01F2                        __pbssBANK0 002C               __end_of_TestVoltage 020A  
+                      __pmaintext 002F                        __pintentry 0004                           _CM1CON0 0119  
+                         _CCP1CON 0017                           _PSTRCON 019D                        __stringtab 0200  
+                         _CheckHV 01A3                      _desiredSpeed 0020                         ?_startPWM 0070  
+                       _ANSELbits 011E                           _doSetup 0138                           __ptext1 0138  
+                         __ptext2 01C3                           __ptext3 020A                           __ptext4 00E9  
+                         __ptext5 01A3                           __ptext6 0176            _button_history_speedDN 0079  
+          _button_history_speedUP 007A                         _T1CONbits 0010                         _T2CONbits 0012  
+                     _TestVoltage 0208              end_of_initialization 002C                        ??_startPWM 0072  
+                      _speedError 0034                         _PORTAbits 0005                         _PORTBbits 0006  
+                       _PORTCbits 0007                         _TRISCbits 0087                       _CM1CON0bits 0119  
+                     _CM2CON0bits 011A                       _CCP1CONbits 0017                         _FlashLED1 00E9  
+                   __pidataCOMMON 0214               start_initialization 000D                       __end_of_Isr 01A3  
+        ??_setupactualSpeedPulses 0072                        ?_FlashLED1 0072                        init_fetch0 01E1  
+                     __pdataBANK0 0020                       __pbssCOMMON 0077                         ___latbits 0001  
+                   __pcstackBANK0 0035                          ?_CheckHV 0072                          ?_doSetup 0070  
+                       __pstrings 0200                 interrupt_function 0004                          _PIE1bits 008C  
+                        _PIE2bits 008D                          _PIR1bits 000C                          _PIR2bits 000D  
+                     ??_FlashLED1 0073                        _ADCON0bits 001F                       __stringbase 0205  
+          _setupactualSpeedPulses 020A                __end_of__stringtab 0206                          _startPWM 01C3  
+                      _INTCONbits 000B                          init_ram0 01E5                          intlevel1 0000  
+                       stringcode 0200                        FlashLED1@p 0076                    _minimumVoltage 0206  
+                        stringdir 0200                          stringtab 0200  

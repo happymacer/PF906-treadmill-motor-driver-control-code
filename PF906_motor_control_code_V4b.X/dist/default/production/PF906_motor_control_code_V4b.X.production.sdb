@@ -1,0 +1,347 @@
+[p GLOBOPT AUTOSTATIC IEEE_DBL IEEE_FLT PIC14 PICREGULAR PICMID ]
+[d version 1.1 ]
+[d edition pro ]
+[d chip 16F690 ]
+[d frameptr 0 ]
+"10 C:\Program Files\Microchip\xc8\v2.36\pic\sources\c90\common\sprcadd.c
+[v ___fladd __fladd `(d  1 e 4 0 ]
+"4 C:\Program Files\Microchip\xc8\v2.36\pic\sources\c90\common\Umul8_16.c
+[v __Umul8_16 _Umul8_16 `(ui  1 e 2 0 ]
+"6 C:\Program Files\Microchip\xc8\v2.36\pic\sources\c90\pic\__eeprom.c
+[v ___eecpymem __eecpymem `(v  1 e 1 0 ]
+"39
+[v ___memcpyee __memcpyee `(v  1 e 1 0 ]
+"222 C:\Users\paul nonadmin\MPLABXProjects\PF906_final_V4b\PF906_motor_control_code_V4b.X\PF906_base_code_v4b.c
+[v _main main `(v  1 e 1 0 ]
+"451
+[v _FlashLED1 FlashLED1 `(v  1 e 1 0 ]
+"491
+[v _doSetup doSetup `(v  1 e 1 0 ]
+"668
+[v _CheckHV CheckHV `(i  1 e 2 0 ]
+"705
+[v _setupactualSpeedPulses setupactualSpeedPulses `(v  1 e 1 0 ]
+"759
+[v _startPWM startPWM `(v  1 e 1 0 ]
+"846
+[v _Isr Isr `II(v  1 e 1 0 ]
+"166 C:/Users/paul nonadmin/.mchp_packs/Microchip/PIC16Fxxx_DFP/1.2.33/xc8\pic\include\proc\pic16f690.h
+[v _PORTA PORTA `VEuc  1 e 1 @5 ]
+[s S47 . 1 `uc 1 RA0 1 0 :1:0 
+`uc 1 RA1 1 0 :1:1 
+`uc 1 RA2 1 0 :1:2 
+`uc 1 RA3 1 0 :1:3 
+`uc 1 RA4 1 0 :1:4 
+`uc 1 RA5 1 0 :1:5 
+]
+"181
+[u S54 . 1 `S47 1 . 1 0 ]
+[v _PORTAbits PORTAbits `VES54  1 e 1 @5 ]
+"216
+[v _PORTB PORTB `VEuc  1 e 1 @6 ]
+[s S64 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 RB4 1 0 :1:4 
+`uc 1 RB5 1 0 :1:5 
+`uc 1 RB6 1 0 :1:6 
+`uc 1 RB7 1 0 :1:7 
+]
+"230
+[u S70 . 1 `S64 1 . 1 0 ]
+[v _PORTBbits PORTBbits `VES70  1 e 1 @6 ]
+"255
+[v _PORTC PORTC `VEuc  1 e 1 @7 ]
+[s S26 . 1 `uc 1 RC0 1 0 :1:0 
+`uc 1 RC1 1 0 :1:1 
+`uc 1 RC2 1 0 :1:2 
+`uc 1 RC3 1 0 :1:3 
+`uc 1 RC4 1 0 :1:4 
+`uc 1 RC5 1 0 :1:5 
+`uc 1 RC6 1 0 :1:6 
+`uc 1 RC7 1 0 :1:7 
+]
+"272
+[u S35 . 1 `S26 1 . 1 0 ]
+[v _PORTCbits PORTCbits `VES35  1 e 1 @7 ]
+"324
+[v _INTCON INTCON `VEuc  1 e 1 @11 ]
+[s S367 . 1 `uc 1 RABIF 1 0 :1:0 
+`uc 1 INTF 1 0 :1:1 
+`uc 1 T0IF 1 0 :1:2 
+`uc 1 RABIE 1 0 :1:3 
+`uc 1 INTE 1 0 :1:4 
+`uc 1 T0IE 1 0 :1:5 
+`uc 1 PEIE 1 0 :1:6 
+`uc 1 GIE 1 0 :1:7 
+]
+"341
+[u S376 . 1 `S367 1 . 1 0 ]
+[v _INTCONbits INTCONbits `VES376  1 e 1 @11 ]
+"386
+[v _PIR1 PIR1 `VEuc  1 e 1 @12 ]
+[s S313 . 1 `uc 1 TMR1IF 1 0 :1:0 
+`uc 1 TMR2IF 1 0 :1:1 
+`uc 1 CCP1IF 1 0 :1:2 
+`uc 1 SSPIF 1 0 :1:3 
+`uc 1 TXIF 1 0 :1:4 
+`uc 1 RCIF 1 0 :1:5 
+`uc 1 ADIF 1 0 :1:6 
+]
+"406
+[s S321 . 1 `uc 1 T1IF 1 0 :1:0 
+`uc 1 T2IF 1 0 :1:1 
+]
+[u S324 . 1 `S313 1 . 1 0 `S321 1 . 1 0 ]
+[v _PIR1bits PIR1bits `VES324  1 e 1 @12 ]
+"456
+[v _PIR2 PIR2 `VEuc  1 e 1 @13 ]
+[s S388 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 EEIF 1 0 :1:4 
+`uc 1 C1IF 1 0 :1:5 
+`uc 1 C2IF 1 0 :1:6 
+`uc 1 OSFIF 1 0 :1:7 
+]
+"470
+[u S394 . 1 `S388 1 . 1 0 ]
+[v _PIR2bits PIR2bits `VES394  1 e 1 @13 ]
+"502
+[v _TMR1L TMR1L `VEuc  1 e 1 @14 ]
+"509
+[v _TMR1H TMR1H `VEuc  1 e 1 @15 ]
+"516
+[v _T1CON T1CON `VEuc  1 e 1 @16 ]
+[s S429 . 1 `uc 1 TMR1ON 1 0 :1:0 
+`uc 1 TMR1CS 1 0 :1:1 
+`uc 1 nT1SYNC 1 0 :1:2 
+`uc 1 T1OSCEN 1 0 :1:3 
+`uc 1 T1CKPS 1 0 :2:4 
+`uc 1 TMR1GE 1 0 :1:6 
+`uc 1 T1GINV 1 0 :1:7 
+]
+"537
+[s S437 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 T1CKPS0 1 0 :1:4 
+`uc 1 T1CKPS1 1 0 :1:5 
+]
+[u S441 . 1 `S429 1 . 1 0 `S437 1 . 1 0 ]
+[v _T1CONbits T1CONbits `VES441  1 e 1 @16 ]
+[s S339 . 1 `uc 1 T2CKPS 1 0 :2:0 
+`uc 1 TMR2ON 1 0 :1:2 
+`uc 1 TOUTPS 1 0 :4:3 
+]
+"615
+[s S343 . 1 `uc 1 T2CKPS0 1 0 :1:0 
+`uc 1 T2CKPS1 1 0 :1:1 
+`uc 1 . 1 0 :1:2 
+`uc 1 TOUTPS0 1 0 :1:3 
+`uc 1 TOUTPS1 1 0 :1:4 
+`uc 1 TOUTPS2 1 0 :1:5 
+`uc 1 TOUTPS3 1 0 :1:6 
+]
+[u S351 . 1 `S339 1 . 1 0 `S343 1 . 1 0 ]
+[v _T2CONbits T2CONbits `VES351  1 e 1 @18 ]
+"749
+[v _CCPR1L CCPR1L `VEuc  1 e 1 @21 ]
+"763
+[v _CCP1CON CCP1CON `VEuc  1 e 1 @23 ]
+[s S90 . 1 `uc 1 CCP1M 1 0 :4:0 
+`uc 1 DC1B 1 0 :2:4 
+`uc 1 P1M 1 0 :2:6 
+]
+"785
+[s S94 . 1 `uc 1 CCP1M0 1 0 :1:0 
+`uc 1 CCP1M1 1 0 :1:1 
+`uc 1 CCP1M2 1 0 :1:2 
+`uc 1 CCP1M3 1 0 :1:3 
+`uc 1 DC1B0 1 0 :1:4 
+`uc 1 DC1B1 1 0 :1:5 
+`uc 1 P1M0 1 0 :1:6 
+`uc 1 P1M1 1 0 :1:7 
+]
+[u S103 . 1 `S90 1 . 1 0 `S94 1 . 1 0 ]
+[v _CCP1CONbits CCP1CONbits `VES103  1 e 1 @23 ]
+"1073
+[v _ADRESH ADRESH `VEuc  1 e 1 @30 ]
+"1080
+[v _ADCON0 ADCON0 `VEuc  1 e 1 @31 ]
+[s S240 . 1 `uc 1 ADON 1 0 :1:0 
+`uc 1 GO_nDONE 1 0 :1:1 
+`uc 1 CHS 1 0 :4:2 
+`uc 1 VCFG 1 0 :1:6 
+`uc 1 ADFM 1 0 :1:7 
+]
+"1110
+[s S246 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 GO 1 0 :1:1 
+`uc 1 CHS0 1 0 :1:2 
+`uc 1 CHS1 1 0 :1:3 
+`uc 1 CHS2 1 0 :1:4 
+`uc 1 CHS3 1 0 :1:5 
+]
+[s S253 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 nDONE 1 0 :1:1 
+]
+[s S256 . 1 `uc 1 . 1 0 :1:0 
+`uc 1 GO_DONE 1 0 :1:1 
+]
+[u S259 . 1 `S240 1 . 1 0 `S246 1 . 1 0 `S253 1 . 1 0 `S256 1 . 1 0 ]
+[v _ADCON0bits ADCON0bits `VES259  1 e 1 @31 ]
+"1245
+[v _TRISA TRISA `VEuc  1 e 1 @133 ]
+"1295
+[v _TRISB TRISB `VEuc  1 e 1 @134 ]
+"1334
+[v _TRISC TRISC `VEuc  1 e 1 @135 ]
+[s S289 . 1 `uc 1 TRISC0 1 0 :1:0 
+`uc 1 TRISC1 1 0 :1:1 
+`uc 1 TRISC2 1 0 :1:2 
+`uc 1 TRISC3 1 0 :1:3 
+`uc 1 TRISC4 1 0 :1:4 
+`uc 1 TRISC5 1 0 :1:5 
+`uc 1 TRISC6 1 0 :1:6 
+`uc 1 TRISC7 1 0 :1:7 
+]
+"1351
+[u S298 . 1 `S289 1 . 1 0 ]
+[v _TRISCbits TRISCbits `VES298  1 e 1 @135 ]
+[s S210 . 1 `uc 1 TMR1IE 1 0 :1:0 
+`uc 1 TMR2IE 1 0 :1:1 
+`uc 1 CCP1IE 1 0 :1:2 
+`uc 1 SSPIE 1 0 :1:3 
+`uc 1 TXIE 1 0 :1:4 
+`uc 1 RCIE 1 0 :1:5 
+`uc 1 ADIE 1 0 :1:6 
+]
+"1416
+[s S218 . 1 `uc 1 T1IE 1 0 :1:0 
+`uc 1 T2IE 1 0 :1:1 
+]
+[u S221 . 1 `S210 1 . 1 0 `S218 1 . 1 0 ]
+[v _PIE1bits PIE1bits `VES221  1 e 1 @140 ]
+[s S162 . 1 `uc 1 . 1 0 :4:0 
+`uc 1 EEIE 1 0 :1:4 
+`uc 1 C1IE 1 0 :1:5 
+`uc 1 C2IE 1 0 :1:6 
+`uc 1 OSFIE 1 0 :1:7 
+]
+"1480
+[u S168 . 1 `S162 1 . 1 0 ]
+[v _PIE2bits PIE2bits `VES168  1 e 1 @141 ]
+"1544
+[v _OSCCON OSCCON `VEuc  1 e 1 @143 ]
+"1661
+[v _PR2 PR2 `VEuc  1 e 1 @146 ]
+"2120
+[v _IOCA IOCA `VEuc  1 e 1 @150 ]
+"2594
+[v _ADRESL ADRESL `VEuc  1 e 1 @158 ]
+"2601
+[v _ADCON1 ADCON1 `VEuc  1 e 1 @159 ]
+"2724
+[v _IOCB IOCB `VEuc  1 e 1 @278 ]
+"2763
+[v _VRCON VRCON `VEuc  1 e 1 @280 ]
+"2833
+[v _CM1CON0 CM1CON0 `VEuc  1 e 1 @281 ]
+[s S403 . 1 `uc 1 C1CH 1 0 :2:0 
+`uc 1 C1R 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 C1POL 1 0 :1:4 
+`uc 1 C1OE 1 0 :1:5 
+`uc 1 C1OUT 1 0 :1:6 
+`uc 1 C1ON 1 0 :1:7 
+]
+"2853
+[s S411 . 1 `uc 1 C1CH0 1 0 :1:0 
+`uc 1 C1CH1 1 0 :1:1 
+]
+[u S414 . 1 `S403 1 . 1 0 `S411 1 . 1 0 ]
+[v _CM1CON0bits CM1CON0bits `VES414  1 e 1 @281 ]
+[s S136 . 1 `uc 1 C2CH 1 0 :2:0 
+`uc 1 C2R 1 0 :1:2 
+`uc 1 . 1 0 :1:3 
+`uc 1 C2POL 1 0 :1:4 
+`uc 1 C2OE 1 0 :1:5 
+`uc 1 C2OUT 1 0 :1:6 
+`uc 1 C2ON 1 0 :1:7 
+]
+"2918
+[s S144 . 1 `uc 1 C2CH0 1 0 :1:0 
+`uc 1 C2CH1 1 0 :1:1 
+]
+[u S147 . 1 `S136 1 . 1 0 `S144 1 . 1 0 ]
+[v _CM2CON0bits CM2CON0bits `VES147  1 e 1 @282 ]
+"3002
+[v _ANSEL ANSEL `VEuc  1 e 1 @286 ]
+[s S182 . 1 `uc 1 ANS0 1 0 :1:0 
+`uc 1 ANS1 1 0 :1:1 
+`uc 1 ANS2 1 0 :1:2 
+`uc 1 ANS3 1 0 :1:3 
+`uc 1 ANS4 1 0 :1:4 
+`uc 1 ANS5 1 0 :1:5 
+`uc 1 ANS6 1 0 :1:6 
+`uc 1 ANS7 1 0 :1:7 
+]
+"3019
+[u S191 . 1 `S182 1 . 1 0 ]
+[v _ANSELbits ANSELbits `VES191  1 e 1 @286 ]
+"3064
+[v _ANSELH ANSELH `VEuc  1 e 1 @287 ]
+"3154
+[v _PSTRCON PSTRCON `VEuc  1 e 1 @413 ]
+"188 C:\Users\paul nonadmin\MPLABXProjects\PF906_final_V4b\PF906_motor_control_code_V4b.X\PF906_base_code_v4b.c
+[v _HV HV `i  1 e 2 0 ]
+"190
+[v _button_history_speedUP button_history_speedUP `uc  1 e 1 0 ]
+"191
+[v _button_history_speedDN button_history_speedDN `uc  1 e 1 0 ]
+"192
+[v _button_history_UserPowerOn_input button_history_UserPowerOn_input `uc  1 e 1 0 ]
+"194
+[v _desiredSpeed desiredSpeed `[12]uc  1 e 12 0 ]
+"197
+[v _desiredSpeedCtr desiredSpeedCtr `uc  1 e 1 0 ]
+"200
+[v _actualSpeedPulses actualSpeedPulses `VEi  1 e 2 0 ]
+"222
+[v _main main `(v  1 e 1 0 ]
+{
+"444
+} 0
+"491
+[v _doSetup doSetup `(v  1 e 1 0 ]
+{
+"610
+} 0
+"759
+[v _startPWM startPWM `(v  1 e 1 0 ]
+{
+"843
+} 0
+"705
+[v _setupactualSpeedPulses setupactualSpeedPulses `(v  1 e 1 0 ]
+{
+"757
+} 0
+"451
+[v _FlashLED1 FlashLED1 `(v  1 e 1 0 ]
+{
+[v FlashLED1@times times `uc  1 a 1 wreg ]
+"453
+[v FlashLED1@p p `uc  1 a 1 6 ]
+"451
+[v FlashLED1@times times `uc  1 a 1 wreg ]
+[v FlashLED1@period period `uc  1 p 1 2 ]
+"453
+[v FlashLED1@times times `uc  1 a 1 5 ]
+"468
+} 0
+"668
+[v _CheckHV CheckHV `(i  1 e 2 0 ]
+{
+"703
+} 0
+"846
+[v _Isr Isr `II(v  1 e 1 0 ]
+{
+"889
+} 0
