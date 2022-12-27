@@ -1,11 +1,12 @@
 # PF906-treadmill-motor-driver-control-code
+
 Version 4b (first public release) Control code for the 16F690 PIC controller on the motor control board.  It is intended to replace the treadmill controller code to make it more useful in machine tool applications like a lathe. Use at your own risk. Do ***NOT*** use it for a treadmill!
 
-Im making this code public under the GNU AFFERO GENERAL PUBLIC LICENSE - https://choosealicense.com/licenses/agpl-3.0/.  If anyone cares to help me develop it further I would be grateful!  None of this code can be used in closed-source applications.
+I'm making this code public under the GNU AFFERO GENERAL PUBLIC LICENSE - https://choosealicense.com/licenses/agpl-3.0/.  If anyone cares to help me develop it further I would be grateful!  None of this code can be used in closed-source applications.
 
-There are no safeties built into the code yet.  It simply generates PWM power for the DC motor.  Please dont use with it if you are inexperienced with mains powered  circuits. Also make sure to bolt the motor down before starting it - I didn't and it jumped off the desk and luckily only broke things and not me.  You may not be so lucky.  Again - **use at your own risk**.
+There are no safeties built into the code yet.  It simply generates PWM power for the DC motor.  Please do not use it if you are inexperienced with mains powered circuits. Also make sure to bolt the motor down before starting it - I didn't and it jumped off the desk and luckily only broke things and not me.  You may not be so lucky.  Again - **use at your own risk**.
 
-I've extensively commented the code for my own benefit to remind me what Ive done and why.  I hope you will find it easy to follow.  Happy to answer questions through Github "issues".
+I've extensively commented the code for my own benefit to remind me what I've done and why.  I hope you will find it easy to follow.  Happy to answer questions through Github "issues".
 
 This code uses discrete speed steps to step the motor through a range of speeds from ~1000RPM to ~3500RPM in 10 equal steps.  These steps can be adjusted in the code. It does 1 step from 0-1000RPM.
 
