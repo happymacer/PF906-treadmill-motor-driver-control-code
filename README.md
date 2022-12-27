@@ -12,7 +12,7 @@ This code uses discrete speed steps to step the motor through a range of speeds 
 
 This is basic code that allows the motor to run at the speed point selected.  Speed can be changed while running by pressing the "speed +" or "speed -" buttons.  It does not use PID yet to maintain the speed under load, and Im hoping to add that as the next release.
 
-To run the motor it is necessary to connect a set of control switches as described in the schematic of the PF906 motor controller board.  Simple tactile switches are best to limit switch bounce - although I have included swuitch deounce code (... and it may have a bug!) I have run this code live and it works as expected.
+To run the motor it is necessary to connect a set of control switches as described in the schematic of the PF906 motor controller board.  Simple tactile switches are best to limit switch bounce - although I have included switch deounce code (... and it may have a bug!) I have run this code live and it works as expected.
 
 To compile the code you will need MPLAB X for PIC16F690 with the XC8 free C compiler.  The original PIC on the board can be rewritten with new code but not read.  Once you upload this code to the 16F690 there is no way to recover the original code so choose carefully.  A way around that is to remove the original chip and replace it with a new one. 
 
